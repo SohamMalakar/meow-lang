@@ -31,6 +31,10 @@ public class Lexer
             {
                 advance();
             }
+            else if (currentChar == '#')
+            {
+                skipComment();
+            }
             else if (currentChar == ';' || currentChar == '\n')
             {
                 tokens.add(new Token(TokenType.NEWLINE));
@@ -104,6 +108,16 @@ public class Lexer
         }
 
         return tokens;
+    }
+
+    private void skipComment()
+    {
+        advance();
+
+        while (currentChar != null && currentChar != '\n')
+            advance();
+
+        advance();
     }
 
     private Token makeAssignment() throws Exception

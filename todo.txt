@@ -7,4 +7,7 @@ List mutability
 Built-in functions
 # Multiline support
 Return, Break, Continue
+# Comments
 # Should return parameter
+Error definition
+Dictionaries
