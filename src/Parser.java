@@ -1,7 +1,6 @@
 package src;
 
 import java.util.ArrayList;
-
 import src.nodes.AlternateAssignNode;
 import src.nodes.BinOpNode;
 import src.nodes.BoolNode;
@@ -17,6 +16,7 @@ import src.nodes.UnaryOpNode;
 import src.nodes.VarAccessNode;
 import src.nodes.VarAssignNode;
 import src.nodes.WhileNode;
+import src.utils.Pair;
 
 public class Parser
 {
@@ -63,6 +63,7 @@ public class Parser
         statements.add(statement);
 
         int newlineCount;
+        boolean moreStatements = true;
 
         while (true)
         {
@@ -75,13 +76,26 @@ public class Parser
             }
 
             if (newlineCount == 0)
+                moreStatements = false;
+
+            if (!moreStatements)
                 break;
 
-            if (currentToken != null)
+            int checkPoint = position; // i know it's spaghetti, so don't worry
+
+            try
             {
                 statement = expr();
-                statements.add(statement);
             }
+            catch (Exception e)
+            {
+                position = checkPoint;
+                currentToken = position < tokens.size() ? tokens.get(position) : null;
+                moreStatements = false;
+                continue;
+            }
+
+            statements.add(statement);
         }
 
         while (currentToken != null && currentToken.type == TokenType.NEWLINE)
@@ -205,7 +219,6 @@ public class Parser
                 advance();
                 return new NumberNode(token);
             }
-            // else if (currentToken.type == TokenType.BOOL)
             else if (currentToken.matches(TokenType.KEYWORD, "true") ||
                      currentToken.matches(TokenType.KEYWORD, "false"))
             {
@@ -299,8 +312,73 @@ public class Parser
 
     private Node ifExpr() throws Exception
     {
-        if (currentToken == null || !currentToken.matches(TokenType.KEYWORD, "if"))
-            throw new Exception("Expected 'if'");
+        Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprCases("if");
+        ArrayList<Pair<Pair<Node, Node>, Boolean>> cases = allCases.key;
+        Pair<Node, Boolean> elseCase = allCases.value;
+        return new IfNode(cases, elseCase);
+    }
+
+    private Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> ifExprB() throws Exception
+    {
+        return ifExprCases("elif");
+    }
+
+    private Pair<Node, Boolean> ifExprC() throws Exception
+    {
+        Pair<Node, Boolean> elseCase = null;
+
+        if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "else"))
+        {
+            advance();
+
+            if (currentToken != null && currentToken.type == TokenType.NEWLINE)
+            {
+                advance();
+                Node statements = statements();
+                elseCase = new Pair<Node, Boolean>(statements, true);
+
+                if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "end"))
+                    advance();
+                else
+                    throw new Exception("Expected 'end'");
+            }
+            else
+            {
+                Node expr = expr();
+                elseCase = new Pair<Node, Boolean>(expr, false);
+            }
+        }
+
+        return elseCase;
+    }
+
+    private Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> ifExprBOrC() throws Exception
+    {
+        ArrayList<Pair<Pair<Node, Node>, Boolean>> cases = new ArrayList<Pair<Pair<Node, Node>, Boolean>>();
+        Pair<Node, Boolean> elseCase = null;
+
+        if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "elif"))
+        {
+            Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprB();
+            cases = allCases.key;
+            elseCase = allCases.value;
+        }
+        else
+        {
+            elseCase = ifExprC();
+        }
+
+        return new Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>>(cases, elseCase);
+    }
+
+    private Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> ifExprCases(String caseKeyword)
+        throws Exception
+    {
+        ArrayList<Pair<Pair<Node, Node>, Boolean>> cases = new ArrayList<Pair<Pair<Node, Node>, Boolean>>();
+        Pair<Node, Boolean> elseCase = null;
+
+        if (currentToken == null || !currentToken.matches(TokenType.KEYWORD, caseKeyword))
+            throw new Exception("Expected '" + caseKeyword + "'");
 
         advance();
         Node condition = expr();
@@ -309,31 +387,41 @@ public class Parser
             throw new Exception("Expected 'then'");
 
         advance();
-        Node expr = expr();
-        ArrayList<Pair<Node, Node>> cases = new ArrayList<Pair<Node, Node>>();
-        Node elseCase = null;
-        cases.add(new Pair<Node, Node>(condition, expr));
 
-        while (currentToken != null && currentToken.matches(TokenType.KEYWORD, "elif"))
+        if (currentToken != null && currentToken.type == TokenType.NEWLINE)
         {
             advance();
-            condition = expr();
+            Node statements = statements();
+            cases.add(new Pair<Pair<Node, Node>, Boolean>(new Pair<Node, Node>(condition, statements), true));
 
-            if (currentToken == null || !currentToken.matches(TokenType.KEYWORD, "then"))
-                throw new Exception("Expected 'then'");
+            if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "end"))
+            {
+                advance();
+            }
+            else
+            {
+                Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprBOrC();
+                ArrayList<Pair<Pair<Node, Node>, Boolean>> newCases = allCases.key;
+                elseCase = allCases.value;
 
-            advance();
-            expr = expr();
-            cases.add(new Pair<Node, Node>(condition, expr));
+                for (var newCase : newCases)
+                    cases.add(newCase);
+            }
         }
-
-        if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "else"))
+        else
         {
-            advance();
-            elseCase = expr();
+            Node expr = expr();
+            cases.add(new Pair<Pair<Node, Node>, Boolean>(new Pair<Node, Node>(condition, expr), false));
+
+            Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprBOrC();
+            ArrayList<Pair<Pair<Node, Node>, Boolean>> newCases = allCases.key;
+            elseCase = allCases.value;
+
+            for (var newCase : newCases)
+                cases.add(newCase);
         }
 
-        return new IfNode(cases, elseCase);
+        return new Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>>(cases, elseCase);
     }
 
     private Node whileExpr() throws Exception
@@ -348,9 +436,23 @@ public class Parser
             throw new Exception("Expected 'then'");
 
         advance();
+
+        if (currentToken != null && currentToken.type == TokenType.NEWLINE)
+        {
+            advance();
+            var body = statements();
+
+            if (currentToken == null || !currentToken.matches(TokenType.KEYWORD, "end"))
+                throw new Exception("Expected 'end'");
+
+            advance();
+
+            return new WhileNode(condition, body, true);
+        }
+
         Node body = expr();
 
-        return new WhileNode(condition, body);
+        return new WhileNode(condition, body, false);
     }
 
     private Node funcDef() throws Exception
@@ -407,12 +509,23 @@ public class Parser
 
         advance();
 
-        if (currentToken == null || currentToken.type != TokenType.ARROW)
-            throw new Exception("Expected '->'");
+        if (currentToken != null && currentToken.type == TokenType.ARROW)
+        {
+            advance();
+            Node body = expr();
+            return new FuncDefNode(varName, args, body, false);
+        }
+
+        if (currentToken == null || currentToken.type != TokenType.NEWLINE)
+            throw new Exception("Expected '->' or NEWLINE");
 
         advance();
-        Node body = expr();
+        var body = statements();
 
-        return new FuncDefNode(varName, args, body);
+        if (currentToken == null || !currentToken.matches(TokenType.KEYWORD, "end"))
+            throw new Exception("Expected 'end'");
+
+        advance();
+        return new FuncDefNode(varName, args, body, true);
     }
 }

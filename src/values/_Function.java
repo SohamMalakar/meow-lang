@@ -1,7 +1,6 @@
 package src.values;
 
 import java.util.ArrayList;
-
 import src.Context;
 import src.Interpreter;
 import src.nodes.Node;
@@ -10,12 +9,14 @@ public class _Function extends _BaseFunction
 {
     private Node body;
     private ArrayList<String> argNames;
+    private boolean shouldReturnNull;
 
-    public _Function(String name, Node body, ArrayList<String> args)
+    public _Function(String name, Node body, ArrayList<String> args, boolean shouldReturnNull)
     {
         super(name);
         this.body = body;
         this.argNames = args;
+        this.shouldReturnNull = shouldReturnNull;
     }
 
     public String value() throws Exception
@@ -30,7 +31,7 @@ public class _Function extends _BaseFunction
 
     public _Value copy()
     {
-        return new _Function(name, body, argNames).setContext(context);
+        return new _Function(name, body, argNames, shouldReturnNull).setContext(context);
     }
 
     public _Value execute(ArrayList<_Value> argValues) throws Exception
@@ -41,6 +42,6 @@ public class _Function extends _BaseFunction
         checkAndPopulateArgs(argNames, argValues, newContext);
 
         _Value value = interpreter.visit(body, newContext);
-        return value;
+        return shouldReturnNull ? new _None() : value;
     }
 }

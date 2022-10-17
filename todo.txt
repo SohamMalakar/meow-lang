@@ -5,6 +5,6 @@ Arithmetic
 Comparison
 List mutability
 Built-in functions
-Multiline support
+# Multiline support
 Return, Break, Continue
-Should return parameter
+# Should return parameter

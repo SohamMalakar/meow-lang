@@ -3,7 +3,6 @@ package src;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 import src.nodes.AlternateAssignNode;
 import src.nodes.BinOpNode;
 import src.nodes.BoolNode;
@@ -131,16 +130,22 @@ public class Interpreter
     public _Value visit(IfNode node, Context context)
         throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException
     {
-        for (Pair<Node, Node> pair : node.cases)
+        for (var pair : node.cases)
         {
-            _Value conditionValue = visit(pair.key, context);
+            _Value conditionValue = visit(pair.key.key, context);
 
             if (conditionValue.isTrue())
-                return visit(pair.value, context);
+            {
+                var exprValue = visit(pair.key.value, context);
+                return pair.value ? new _None() : exprValue;
+            }
         }
 
         if (node.elseCase != null)
-            return visit(node.elseCase, context);
+        {
+            var elseValue = visit(node.elseCase.key, context);
+            return node.elseCase.value ? new _None() : elseValue;
+        }
 
         return new _None();
     }
@@ -160,7 +165,7 @@ public class Interpreter
             elements.add(visit(node.body, context));
         }
 
-        return new _List(elements).setContext(context);
+        return node.shouldReturnNull ? new _None() : new _List(elements).setContext(context);
     }
 
     public _Value visit(FuncDefNode node, Context context)
@@ -172,7 +177,8 @@ public class Interpreter
         for (Token arg : node.args)
             args.add(arg.value);
 
-        _Function funcValue = (_Function) new _Function(funcName, body, args).setContext(context);
+        _Function funcValue =
+            (_Function) new _Function(funcName, body, args, node.shouldReturnNull).setContext(context);
 
         if (funcName != null)
             context.symbolTable.set(funcName, funcValue);
@@ -184,12 +190,13 @@ public class Interpreter
     {
         ArrayList<_Value> args = new ArrayList<>();
         _Value valueToCall = visit(node.node, context);
-        valueToCall = valueToCall.copy(); // why?
+        // valueToCall = valueToCall.copy(); // why?
 
         for (Node arg : node.args)
             args.add(visit(arg, context));
 
         _Value returnValue = valueToCall.execute(args);
-        return returnValue.copy();
+        // return returnValue.copy();
+        return returnValue;
     }
 }

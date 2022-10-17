@@ -4,11 +4,13 @@ public class WhileNode extends Node
 {
     public Node condition;
     public Node body;
+    public boolean shouldReturnNull;
 
-    public WhileNode(Node condition, Node body)
+    public WhileNode(Node condition, Node body, boolean shouldReturnNull)
     {
         this.condition = condition;
         this.body = body;
+        this.shouldReturnNull = shouldReturnNull;
     }
 
     public String repr() throws Exception
