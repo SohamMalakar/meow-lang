@@ -13,6 +13,7 @@ import src.nodes.ListNode;
 import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
+import src.nodes.StringNode;
 import src.nodes.SubscriptableNode;
 import src.nodes.UnaryOpNode;
 import src.nodes.VarAccessNode;
@@ -23,6 +24,7 @@ import src.values._Function;
 import src.values._List;
 import src.values._None;
 import src.values._Number;
+import src.values._String;
 import src.values._Value;
 
 public class Interpreter
@@ -46,6 +48,11 @@ public class Interpreter
     public _Value visit(BoolNode node, Context context)
     {
         return new _Bool(node).setContext(context);
+    }
+
+    public _Value visit(StringNode node, Context context)
+    {
+        return new _String(node).setContext(context);
     }
 
     public _Value visit(NoneTypeNode node, Context context)

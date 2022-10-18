@@ -48,6 +48,10 @@ public class Lexer
             {
                 tokens.add(makeIdentifier());
             }
+            else if (currentChar == '"' || currentChar == '\'')
+            {
+                tokens.add(makeString());
+            }
             else if (currentChar == '+')
             {
                 tokens.add(new Token(TokenType.PLUS));
@@ -145,6 +149,51 @@ public class Lexer
         }
 
         return new Token(type);
+    }
+
+    private Token makeString() throws Exception
+    {
+        String str = "";
+        char invertedComma = currentChar;
+
+        advance();
+
+        while (currentChar != null)
+        {
+            if (currentChar == '\\')
+            {
+                advance();
+
+                if (currentChar == null)
+                    break;
+
+                if (currentChar == 'n')
+                    str += '\n';
+                else if (currentChar == 't')
+                    str += '\t';
+                else if (currentChar == '\'')
+                    str += '\'';
+                else if (currentChar == '\"')
+                    str += '\"';
+                else if (currentChar == '\\')
+                    str += '\\';
+                else
+                    str += "\\" + currentChar;
+
+                advance();
+                continue;
+            }
+            else if (currentChar == invertedComma)
+            {
+                advance();
+                return new Token(TokenType.STRING, str);
+            }
+
+            str += currentChar;
+            advance();
+        }
+
+        throw new Exception("SyntaxError: unterminated string literal");
     }
 
     private Token makeIdentifier()

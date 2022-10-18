@@ -4,6 +4,7 @@ public enum TokenType
 {
     INT,
     FLOAT,
+    STRING,
     KEYWORD,
     IDENTIFIER,
     EQ,

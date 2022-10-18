@@ -11,6 +11,7 @@ import src.nodes.ListNode;
 import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
+import src.nodes.StringNode;
 import src.nodes.SubscriptableNode;
 import src.nodes.UnaryOpNode;
 import src.nodes.VarAccessNode;
@@ -225,6 +226,12 @@ public class Parser
                 Token token = currentToken;
                 advance();
                 return new BoolNode(token);
+            }
+            else if (currentToken.type == TokenType.STRING)
+            {
+                Token token = currentToken;
+                advance();
+                return new StringNode(token);
             }
             else if (currentToken.matches(TokenType.KEYWORD, "none"))
             {

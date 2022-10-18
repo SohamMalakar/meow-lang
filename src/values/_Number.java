@@ -100,7 +100,7 @@ public class _Number extends _Value
                     .setContext(context);
             }
         }
-        else if (other.getClass() == _List.class && type().equals("int"))
+        else if ((other.getClass() == _List.class || other.getClass() == _String.class) && type().equals("int"))
         {
             return other.multedBy(this);
         }
