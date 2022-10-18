@@ -38,7 +38,7 @@ public class _Number extends _Value
         Token left = this.node.token;
 
         if (other.getClass() != _Number.class)
-            super.addedTo(other);
+            return (_Number)super.addedTo(other);
 
         Token right = ((_Number)other).node.token;
 
@@ -61,7 +61,7 @@ public class _Number extends _Value
         Token left = this.node.token;
 
         if (other.getClass() != _Number.class)
-            super.subbedBy(other);
+            return (_Number)super.subbedBy(other);
 
         Token right = ((_Number)other).node.token;
 
@@ -113,7 +113,7 @@ public class _Number extends _Value
         Token left = this.node.token;
 
         if (other.getClass() != _Number.class)
-            super.divedBy(other);
+            return (_Number)super.divedBy(other);
 
         Token right = ((_Number)other).node.token;
 
