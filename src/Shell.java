@@ -11,9 +11,24 @@ class Shell
             while (true)
             {
                 System.out.print("🐈 >>> ");
-                String text = scanner.nextLine();
 
-                if (text.trim().isEmpty())
+                String text = "";
+
+                while (true)
+                {
+                    text += scanner.nextLine();
+                    text = text.trim();
+
+                    if (text.isEmpty())
+                        break;
+
+                    var endChar = text.charAt(text.length() - 1);
+
+                    if (endChar != ';')
+                        break;
+                }
+
+                if (text.isEmpty())
                     continue;
 
                 try
