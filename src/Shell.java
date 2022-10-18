@@ -11,22 +11,19 @@ class Shell
             while (true)
             {
                 System.out.print("🐈 >>> ");
-
                 String text = "";
 
                 while (true)
                 {
-                    text += scanner.nextLine();
-                    text = text.trim();
+                    String word = scanner.nextLine();
+                    word = word.replaceAll("#.*", "");
+                    text += word;
 
-                    if (text.isEmpty())
-                        break;
-
-                    var endChar = text.charAt(text.length() - 1);
-
-                    if (endChar != ';')
+                    if (!word.endsWith(";"))
                         break;
                 }
+
+                text = text.replaceAll(";", "\n").trim();
 
                 if (text.isEmpty())
                     continue;
