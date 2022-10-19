@@ -1,16 +1,18 @@
 statements  : NEWLINE* expr (NEWLINE+ expr)* NEWLINE*
 
-expr        : IDENTIFIER (LSQUARE expr RSQUARE)* EQ|ASSIGN expr
+expr        : IDENTIFIER EQ|ASSIGN expr
             : term ((PLUS|MINUS) term)*
 
-term        : subscript ((MUL|DIV) subscript)*
+term        : factor ((MUL|DIV|INTDIV|MOD) factor)*
 
-subscript   : call (LSQUARE expr RSQUARE)*
+factor      : (PLUS|MINUS) factor
+            : power
 
-call        : factor (LPAREN (expr (COMMA expr)*)? RPAREN)*
+power       : call (POW factor)*
 
-factor      : INT|FLOAT|BOOL|STRING|NONE|IDENTIFIER
-            : (PLUS|MINUS) factor
+call        : atom ((LPAREN (expr (COMMA expr)*)? RPAREN)|(LSQUARE expr RSQUARE))*
+
+atom        : INT|FLOAT|BOOL|STRING|NONE|IDENTIFIER
             : LPAREN expr RPAREN
             : list-expr
             : if-expr

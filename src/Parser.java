@@ -143,74 +143,102 @@ public class Parser
 
     private Node term() throws Exception
     {
-        Node left = subscript();
+        Node left = factor();
 
-        while (currentToken != null && (currentToken.type == TokenType.MUL || currentToken.type == TokenType.DIV))
+        while (currentToken != null && (currentToken.type == TokenType.MUL || currentToken.type == TokenType.DIV ||
+                                        currentToken.type == TokenType.INTDIV || currentToken.type == TokenType.MOD))
         {
             Token token = currentToken;
             advance();
-            Node right = subscript();
+            Node right = factor();
             left = new BinOpNode(left, token, right);
         }
 
         return left;
     }
 
-    private Node subscript() throws Exception
+    private Node factor() throws Exception
     {
-        Node factor = call();
-
-        while (currentToken != null && currentToken.type == TokenType.LSQUARE)
+        if (currentToken != null && (currentToken.type == TokenType.PLUS || currentToken.type == TokenType.MINUS))
         {
+            Token token = currentToken;
             advance();
-            Node expr = expr();
-
-            if (currentToken == null || currentToken.type != TokenType.RSQUARE)
-                throw new Exception("Expected ']'");
-
-            factor = new SubscriptableNode(factor, expr);
-            advance();
+            Node factor = factor();
+            return new UnaryOpNode(token, factor);
         }
 
-        return factor;
+        return power();
+    }
+
+    private Node power() throws Exception
+    {
+        Node left = call();
+
+        while (currentToken != null && currentToken.type == TokenType.POW)
+        {
+            Token token = currentToken;
+            advance();
+            Node right = factor();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
     }
 
     private Node call() throws Exception
     {
-        Node factor = factor();
+        Node atom = atom();
 
-        while (currentToken != null && currentToken.type == TokenType.LPAREN)
+        while (currentToken != null)
         {
-            advance();
-            ArrayList<Node> args = new ArrayList<Node>();
-
-            if (currentToken != null && currentToken.type == TokenType.RPAREN)
+            if (currentToken.type == TokenType.LPAREN)
             {
+                advance();
+                ArrayList<Node> args = new ArrayList<Node>();
+
+                if (currentToken != null && currentToken.type == TokenType.RPAREN)
+                {
+                    advance();
+                }
+                else
+                {
+                    args.add(expr());
+
+                    while (currentToken != null && currentToken.type == TokenType.COMMA)
+                    {
+                        advance();
+                        args.add(expr());
+                    }
+
+                    if (currentToken == null || currentToken.type != TokenType.RPAREN)
+                        throw new Exception("Expected ',' or ')'");
+
+                    advance();
+                }
+
+                atom = new CallNode(atom, args);
+            }
+            else if (currentToken.type == TokenType.LSQUARE)
+            {
+                advance();
+                Node expr = expr();
+
+                if (currentToken == null || currentToken.type != TokenType.RSQUARE)
+                    throw new Exception("Expected ']'");
+
+                atom = new SubscriptableNode(atom, expr);
                 advance();
             }
             else
             {
-                args.add(expr());
-
-                while (currentToken != null && currentToken.type == TokenType.COMMA)
-                {
-                    advance();
-                    args.add(expr());
-                }
-
-                if (currentToken == null || currentToken.type != TokenType.RPAREN)
-                    throw new Exception("Expected ',' or ')'");
-
-                advance();
+                break;
             }
-
-            factor = new CallNode(factor, args);
         }
 
-        return factor;
+        return atom;
     }
 
-    private Node factor() throws Exception
+    private Node atom() throws Exception
     {
         if (currentToken != null)
         {
@@ -237,13 +265,6 @@ public class Parser
             {
                 advance();
                 return new NoneTypeNode();
-            }
-            else if (currentToken.type == TokenType.PLUS || currentToken.type == TokenType.MINUS)
-            {
-                Token token = currentToken;
-                advance();
-                Node factor = factor();
-                return new UnaryOpNode(token, factor);
             }
             else if (currentToken.type == TokenType.IDENTIFIER)
             {
@@ -319,9 +340,9 @@ public class Parser
 
     private Node ifExpr() throws Exception
     {
-        Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprCases("if");
-        ArrayList<Pair<Pair<Node, Node>, Boolean>> cases = allCases.key;
-        Pair<Node, Boolean> elseCase = allCases.value;
+        var allCases = ifExprCases("if");
+        var cases = allCases.key;
+        var elseCase = allCases.value;
         return new IfNode(cases, elseCase);
     }
 
@@ -342,7 +363,7 @@ public class Parser
             {
                 advance();
                 Node statements = statements();
-                elseCase = new Pair<Node, Boolean>(statements, true);
+                elseCase = new Pair<>(statements, true);
 
                 if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "end"))
                     advance();
@@ -352,7 +373,7 @@ public class Parser
             else
             {
                 Node expr = expr();
-                elseCase = new Pair<Node, Boolean>(expr, false);
+                elseCase = new Pair<>(expr, false);
             }
         }
 
@@ -361,12 +382,12 @@ public class Parser
 
     private Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> ifExprBOrC() throws Exception
     {
-        ArrayList<Pair<Pair<Node, Node>, Boolean>> cases = new ArrayList<Pair<Pair<Node, Node>, Boolean>>();
+        var cases = new ArrayList<Pair<Pair<Node, Node>, Boolean>>();
         Pair<Node, Boolean> elseCase = null;
 
         if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "elif"))
         {
-            Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprB();
+            var allCases = ifExprB();
             cases = allCases.key;
             elseCase = allCases.value;
         }
@@ -375,13 +396,13 @@ public class Parser
             elseCase = ifExprC();
         }
 
-        return new Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>>(cases, elseCase);
+        return new Pair<>(cases, elseCase);
     }
 
     private Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> ifExprCases(String caseKeyword)
         throws Exception
     {
-        ArrayList<Pair<Pair<Node, Node>, Boolean>> cases = new ArrayList<Pair<Pair<Node, Node>, Boolean>>();
+        var cases = new ArrayList<Pair<Pair<Node, Node>, Boolean>>();
         Pair<Node, Boolean> elseCase = null;
 
         if (currentToken == null || !currentToken.matches(TokenType.KEYWORD, caseKeyword))
@@ -399,7 +420,7 @@ public class Parser
         {
             advance();
             Node statements = statements();
-            cases.add(new Pair<Pair<Node, Node>, Boolean>(new Pair<Node, Node>(condition, statements), true));
+            cases.add(new Pair<>(new Pair<>(condition, statements), true));
 
             if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "end"))
             {
@@ -407,8 +428,8 @@ public class Parser
             }
             else
             {
-                Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprBOrC();
-                ArrayList<Pair<Pair<Node, Node>, Boolean>> newCases = allCases.key;
+                var allCases = ifExprBOrC();
+                var newCases = allCases.key;
                 elseCase = allCases.value;
 
                 for (var newCase : newCases)
@@ -418,17 +439,17 @@ public class Parser
         else
         {
             Node expr = expr();
-            cases.add(new Pair<Pair<Node, Node>, Boolean>(new Pair<Node, Node>(condition, expr), false));
+            cases.add(new Pair<>(new Pair<>(condition, expr), false));
 
-            Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>> allCases = ifExprBOrC();
-            ArrayList<Pair<Pair<Node, Node>, Boolean>> newCases = allCases.key;
+            var allCases = ifExprBOrC();
+            var newCases = allCases.key;
             elseCase = allCases.value;
 
             for (var newCase : newCases)
                 cases.add(newCase);
         }
 
-        return new Pair<ArrayList<Pair<Pair<Node, Node>, Boolean>>, Pair<Node, Boolean>>(cases, elseCase);
+        return new Pair<>(cases, elseCase);
     }
 
     private Node whileExpr() throws Exception

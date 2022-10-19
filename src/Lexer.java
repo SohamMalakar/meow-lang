@@ -63,12 +63,15 @@ public class Lexer
             }
             else if (currentChar == '*')
             {
-                tokens.add(new Token(TokenType.MUL));
-                advance();
+                tokens.add(makeMul());
             }
             else if (currentChar == '/')
             {
-                tokens.add(new Token(TokenType.DIV));
+                tokens.add(makeDiv());
+            }
+            else if (currentChar == '%')
+            {
+                tokens.add(new Token(TokenType.MOD));
                 advance();
             }
             else if (currentChar == '=')
@@ -207,6 +210,34 @@ public class Lexer
         }
 
         return new Token(Keywords.values.contains(idStr) ? TokenType.KEYWORD : TokenType.IDENTIFIER, idStr);
+    }
+
+    private Token makeMul()
+    {
+        TokenType type = TokenType.MUL;
+        advance();
+
+        if (currentChar != null && currentChar == '*')
+        {
+            type = TokenType.POW;
+            advance();
+        }
+
+        return new Token(type);
+    }
+
+    private Token makeDiv()
+    {
+        TokenType type = TokenType.DIV;
+        advance();
+
+        if (currentChar != null && currentChar == '/')
+        {
+            type = TokenType.INTDIV;
+            advance();
+        }
+
+        return new Token(type);
     }
 
     private Token makeNumber() throws Exception

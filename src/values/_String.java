@@ -63,7 +63,10 @@ public class _String extends _Value
         if (!other.type().equals("int"))
             return super.multedBy(other);
 
-        String newStr = rawValue().repeat(Integer.parseInt(other.value()));
+        int count = Integer.parseInt(other.value());
+        count = count < 0 ? 0 : count;
+
+        String newStr = rawValue().repeat(count);
         return new _String(new StringNode(new Token(TokenType.STRING, newStr)));
     }
 }

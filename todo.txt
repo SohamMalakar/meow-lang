@@ -1,8 +1,9 @@
 # String
 Foreach
 Unit tests
-Arithmetic
+# Arithmetic
 Comparison
+Logical and Bitwise
 List mutability
 Built-in functions
 # Multiline support

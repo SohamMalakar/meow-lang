@@ -1,7 +1,6 @@
 package src.values;
 
 import java.util.ArrayList;
-
 import src.Context;
 
 public class _Value
@@ -46,25 +45,42 @@ public class _Value
 
     public _Value addedTo(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for +: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "+");
     }
 
     public _Value subbedBy(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for -: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "-");
     }
 
     public _Value multedBy(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for *: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "*");
     }
 
     public _Value divedBy(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for /: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "/");
+    }
+
+    public _Value intdivedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "//");
+    }
+
+    public _Value moduloBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "%");
+    }
+
+    public _Value poweredBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "**");
+    }
+
+    private _Value illegalOperation(_Value other, String operator) throws Exception
+    {
+        throw new Exception("TypeError: unsupported operand type(s) for " + operator + ": '" + type() + "' and '" +
+                            other.type() + "'");
     }
 }

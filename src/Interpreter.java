@@ -91,6 +91,12 @@ public class Interpreter
             result = left.multedBy(right);
         else if (node.token.type == TokenType.DIV)
             result = left.divedBy(right);
+        else if (node.token.type == TokenType.INTDIV)
+            result = left.intdivedBy(right);
+        else if (node.token.type == TokenType.MOD)
+            result = left.moduloBy(right);
+        else if (node.token.type == TokenType.POW)
+            result = left.poweredBy(right);
 
         return result;
     }
