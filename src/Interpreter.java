@@ -97,6 +97,18 @@ public class Interpreter
             result = left.moduloBy(right);
         else if (node.token.type == TokenType.POW)
             result = left.poweredBy(right);
+        else if (node.token.type == TokenType.EE)
+            result = left.getComparisonEq(right);
+        else if (node.token.type == TokenType.NE)
+            result = left.getComparisonNe(right);
+        else if (node.token.type == TokenType.LT)
+            result = left.getComparisonLt(right);
+        else if (node.token.type == TokenType.GT)
+            result = left.getComparisonGt(right);
+        else if (node.token.type == TokenType.LTE)
+            result = left.getComparisonLte(right);
+        else if (node.token.type == TokenType.GTE)
+            result = left.getComparisonGte(right);
 
         return result;
     }
@@ -141,7 +153,7 @@ public class Interpreter
     }
 
     public _Value visit(IfNode node, Context context)
-        throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException
+        throws Exception
     {
         for (var pair : node.cases)
         {
@@ -164,7 +176,7 @@ public class Interpreter
     }
 
     public _Value visit(WhileNode node, Context context)
-        throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException
+        throws Exception
     {
         ArrayList<_Value> elements = new ArrayList<>();
 

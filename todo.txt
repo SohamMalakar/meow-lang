@@ -2,8 +2,10 @@
 Foreach
 Unit tests
 # Arithmetic
-Comparison
+# Comparison
+List comparison
 Logical and Bitwise
+Shorthand
 List mutability
 Built-in functions
 # Multiline support

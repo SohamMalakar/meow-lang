@@ -76,8 +76,19 @@ public class Lexer
             }
             else if (currentChar == '=')
             {
-                tokens.add(new Token(TokenType.EQ));
-                advance();
+                tokens.add(makeEquals());
+            }
+            else if (currentChar == '!')
+            {
+                tokens.add(makeNotEquals());
+            }
+            else if (currentChar == '<')
+            {
+                tokens.add(makeLessThan());
+            }
+            else if (currentChar == '>')
+            {
+                tokens.add(makeGreaterThan());
             }
             else if (currentChar == ':')
             {
@@ -148,6 +159,61 @@ public class Lexer
         if (currentChar != null && currentChar == '>')
         {
             type = TokenType.ARROW;
+            advance();
+        }
+
+        return new Token(type);
+    }
+
+    private Token makeEquals()
+    {
+        TokenType type = TokenType.EQ;
+        advance();
+
+        if (currentChar != null && currentChar == '=')
+        {
+            type = TokenType.EE;
+            advance();
+        }
+
+        return new Token(type);
+    }
+
+    private Token makeNotEquals() throws Exception
+    {
+        advance();
+
+        if (currentChar != null && currentChar == '=')
+        {
+            advance();
+            return new Token(TokenType.NE);
+        }
+
+        throw new Exception("Illegal character: '!'");
+    }
+
+    private Token makeLessThan()
+    {
+        TokenType type = TokenType.LT;
+        advance();
+
+        if (currentChar != null && currentChar == '=')
+        {
+            type = TokenType.LTE;
+            advance();
+        }
+
+        return new Token(type);
+    }
+
+    private Token makeGreaterThan()
+    {
+        TokenType type = TokenType.GT;
+        advance();
+
+        if (currentChar != null && currentChar == '=')
+        {
+            type = TokenType.GTE;
             advance();
         }
 

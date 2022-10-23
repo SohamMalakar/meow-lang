@@ -23,9 +23,9 @@ public class _Value
         throw new Exception("No type method defined");
     }
 
-    public boolean isTrue()
+    public boolean isTrue() throws Exception
     {
-        return false;
+        throw new Exception("No isTrue method defined");
     }
 
     public _Value copy() throws Exception
@@ -76,6 +76,36 @@ public class _Value
     public _Value poweredBy(_Value other) throws Exception
     {
         return illegalOperation(other, "**");
+    }
+
+    public _Value getComparisonEq(_Value other) throws Exception
+    {
+        return illegalOperation(other, "==");
+    }
+
+    public _Value getComparisonNe(_Value other) throws Exception
+    {
+        return illegalOperation(other, "!=");
+    }
+
+    public _Value getComparisonLt(_Value other) throws Exception
+    {
+        return illegalOperation(other, "<");
+    }
+
+    public _Value getComparisonGt(_Value other) throws Exception
+    {
+        return illegalOperation(other, ">");
+    }
+
+    public _Value getComparisonLte(_Value other) throws Exception
+    {
+        return illegalOperation(other, "<=");
+    }
+
+    public _Value getComparisonGte(_Value other) throws Exception
+    {
+        return illegalOperation(other, ">=");
     }
 
     private _Value illegalOperation(_Value other, String operator) throws Exception

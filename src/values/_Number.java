@@ -2,6 +2,7 @@ package src.values;
 
 import src.Token;
 import src.TokenType;
+import src.nodes.BoolNode;
 import src.nodes.NumberNode;
 import src.utils.Mathf;
 
@@ -211,5 +212,107 @@ public class _Number extends _Value
             return (_Number) new _Number(new NumberNode(new Token(TokenType.FLOAT, String.valueOf(res))))
                 .setContext(context);
         }
+    }
+
+    public _Value getComparisonEq(_Value other) throws Exception
+    {
+        if (other.getClass() == _Number.class)
+        {
+            if (this.type().equals("int") && other.type().equals("int"))
+                return new _Bool(new BoolNode(
+                    new Token(TokenType.KEYWORD,
+                              Boolean.toString(Integer.parseInt(this.value()) == Integer.parseInt(other.value())))));
+            else
+                return new _Bool(
+                    new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(Double.parseDouble(this.value()) ==
+                                                                               Double.parseDouble(other.value())))));
+        }
+        else if (other.getClass() == _Bool.class)
+        {
+            return ((_Bool)other).getComparisonEq(this);
+        }
+
+        return new _Bool(new BoolNode(new Token(TokenType.KEYWORD, "false")));
+    }
+
+    public _Value getComparisonNe(_Value other) throws Exception
+    {
+        if (other.getClass() == _Number.class)
+        {
+            if (this.type().equals("int") && other.type().equals("int"))
+                return new _Bool(new BoolNode(
+                    new Token(TokenType.KEYWORD,
+                              Boolean.toString(Integer.parseInt(this.value()) != Integer.parseInt(other.value())))));
+            else
+                return new _Bool(
+                    new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(Double.parseDouble(this.value()) !=
+                                                                               Double.parseDouble(other.value())))));
+        }
+        else if (other.getClass() == _Bool.class)
+        {
+            return ((_Bool)other).getComparisonNe(this);
+        }
+
+        return new _Bool(new BoolNode(new Token(TokenType.KEYWORD, "true")));
+    }
+
+    public _Value getComparisonLt(_Value other) throws Exception
+    {
+        if (other.getClass() != _Number.class)
+            return super.getComparisonLt(other);
+
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Integer.parseInt(this.value()) < Integer.parseInt(other.value())))));
+        else
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Double.parseDouble(this.value()) < Double.parseDouble(other.value())))));
+    }
+
+    public _Value getComparisonGt(_Value other) throws Exception
+    {
+        if (other.getClass() != _Number.class)
+            return super.getComparisonGt(other);
+
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Integer.parseInt(this.value()) > Integer.parseInt(other.value())))));
+        else
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Double.parseDouble(this.value()) > Double.parseDouble(other.value())))));
+    }
+
+    public _Value getComparisonLte(_Value other) throws Exception
+    {
+        if (other.getClass() != _Number.class)
+            return super.getComparisonLte(other);
+
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Integer.parseInt(this.value()) <= Integer.parseInt(other.value())))));
+        else
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Double.parseDouble(this.value()) <= Double.parseDouble(other.value())))));
+    }
+
+    public _Value getComparisonGte(_Value other) throws Exception
+    {
+        if (other.getClass() != _Number.class)
+            return super.getComparisonGte(other);
+
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Integer.parseInt(this.value()) >= Integer.parseInt(other.value())))));
+        else
+            return new _Bool(new BoolNode(
+                new Token(TokenType.KEYWORD,
+                          Boolean.toString(Double.parseDouble(this.value()) >= Double.parseDouble(other.value())))));
     }
 }

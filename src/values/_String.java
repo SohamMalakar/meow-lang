@@ -2,6 +2,7 @@ package src.values;
 
 import src.Token;
 import src.TokenType;
+import src.nodes.BoolNode;
 import src.nodes.StringNode;
 
 public class _String extends _Value
@@ -68,5 +69,63 @@ public class _String extends _Value
 
         String newStr = rawValue().repeat(count);
         return new _String(new StringNode(new Token(TokenType.STRING, newStr)));
+    }
+
+    public _Value getComparisonEq(_Value other) throws Exception
+    {
+        if (other.getClass() == _String.class)
+            return new _Bool(
+                new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(this.value().equals(other.value())))));
+        else if (other.getClass() == _Bool.class)
+            return ((_Bool)other).getComparisonEq(this);
+
+        return new _Bool(new BoolNode(new Token(TokenType.KEYWORD, "false")));
+    }
+
+    public _Value getComparisonNe(_Value other) throws Exception
+    {
+        if (other.getClass() == _String.class)
+            return new _Bool(
+                new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(!this.value().equals(other.value())))));
+        else if (other.getClass() == _Bool.class)
+            return ((_Bool)other).getComparisonNe(this);
+
+        return new _Bool(new BoolNode(new Token(TokenType.KEYWORD, "true")));
+    }
+
+    public _Value getComparisonLt(_Value other) throws Exception
+    {
+        if (!other.type().equals("str"))
+            return super.getComparisonLt(other);
+
+        return new _Bool(
+            new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(this.value().compareTo(other.value()) < 0))));
+    }
+
+    public _Value getComparisonGt(_Value other) throws Exception
+    {
+        if (!other.type().equals("str"))
+            return super.getComparisonGt(other);
+
+        return new _Bool(
+            new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(this.value().compareTo(other.value()) > 0))));
+    }
+
+    public _Value getComparisonLte(_Value other) throws Exception
+    {
+        if (!other.type().equals("str"))
+            return super.getComparisonLte(other);
+
+        return new _Bool(
+            new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(this.value().compareTo(other.value()) <= 0))));
+    }
+
+    public _Value getComparisonGte(_Value other) throws Exception
+    {
+        if (!other.type().equals("str"))
+            return super.getComparisonGte(other);
+
+        return new _Bool(
+            new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(this.value().compareTo(other.value()) >= 0))));
     }
 }

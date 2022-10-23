@@ -128,6 +128,28 @@ public class Parser
             }
         }
 
+        return compExpr();
+    }
+
+    private Node compExpr() throws Exception
+    {
+        Node left = arithExpr();
+
+        while (currentToken != null && (currentToken.type == TokenType.EE || currentToken.type == TokenType.NE ||
+                                        currentToken.type == TokenType.LT || currentToken.type == TokenType.GT ||
+                                        currentToken.type == TokenType.LTE || currentToken.type == TokenType.GTE))
+        {
+            Token token = currentToken;
+            advance();
+            Node right = arithExpr();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
+    }
+
+    private Node arithExpr() throws Exception
+    {
         Node left = term();
 
         while (currentToken != null && (currentToken.type == TokenType.PLUS || currentToken.type == TokenType.MINUS))
