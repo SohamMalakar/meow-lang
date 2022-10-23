@@ -11,6 +11,11 @@ public class _List extends _Value
         this.elements = elements;
     }
 
+    public int size()
+    {
+        return elements.size();
+    }
+
     public String rawValue() throws Exception
     {
         String str = "[";

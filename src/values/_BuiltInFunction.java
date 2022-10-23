@@ -83,7 +83,7 @@ public class _BuiltInFunction extends _BaseFunction
 
         bufferedReader.close();
 
-        Run.run(buffer.toString());
+        Run.run(buffer.toString(), true);
         return new _None();
     }
 }

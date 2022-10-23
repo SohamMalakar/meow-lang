@@ -30,7 +30,7 @@ class Shell
 
                 try
                 {
-                    Run.run(text);
+                    Run.run(text, false);
                 }
                 catch (Exception e)
                 {

@@ -2,7 +2,10 @@ package src;
 
 import java.util.ArrayList;
 import src.nodes.Node;
+import src.nodes.NumberNode;
 import src.values._BuiltInFunction;
+import src.values._List;
+import src.values._Number;
 import src.values._Value;
 
 public class Run
@@ -16,7 +19,7 @@ public class Run
         symbolTable.set("run", new _BuiltInFunction("run"));
     }
 
-    public static void run(String text) throws Exception
+    public static void run(String text, boolean noEcho) throws Exception
     {
         Lexer lexer = new Lexer(text);
         ArrayList<Token> tokens = lexer.makeTokens();
@@ -36,6 +39,21 @@ public class Run
         context.symbolTable = symbolTable;
         _Value result = interpreter.visit(ast, context);
 
-        System.out.println(result.value());
+        prettyPrint(result, noEcho);
+    }
+
+    private static void prettyPrint(_Value result, boolean noEcho) throws Exception
+    {
+        if (((_List)result).size() == 1)
+        {
+            var index = new _Number(new NumberNode(new Token(TokenType.INT, "0")));
+
+            if (!result.get(index).type().equals("NoneType"))
+                System.out.println(result.get(index).value());
+        }
+        else if (!noEcho)
+        {
+            System.out.println(result.value());
+        }
     }
 }
