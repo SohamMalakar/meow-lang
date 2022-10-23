@@ -13,7 +13,7 @@ public class _Bool extends _Value
         this.node = node;
     }
 
-    public String value()
+    public String rawValue()
     {
         return node.token.value;
     }
@@ -23,7 +23,7 @@ public class _Bool extends _Value
         return "bool";
     }
 
-    public boolean isTrue()
+    public boolean isTrue() throws Exception
     {
         return value().equals("true");
     }

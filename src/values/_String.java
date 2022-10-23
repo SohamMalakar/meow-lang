@@ -19,7 +19,7 @@ public class _String extends _Value
         return "'" + rawValue() + "'";
     }
 
-    private String rawValue()
+    public String rawValue()
     {
         return node.token.value;
     }

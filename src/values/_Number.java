@@ -15,7 +15,7 @@ public class _Number extends _Value
         this.node = node;
     }
 
-    public String value()
+    public String rawValue()
     {
         return node.token.value;
     }
@@ -25,7 +25,7 @@ public class _Number extends _Value
         return node.token.type == TokenType.INT ? "int" : "float";
     }
 
-    public boolean isTrue()
+    public boolean isTrue() throws NumberFormatException, Exception
     {
         return Double.parseDouble(value()) != 0;
     }

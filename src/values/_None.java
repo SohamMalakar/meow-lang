@@ -6,7 +6,7 @@ import src.nodes.BoolNode;
 
 public class _None extends _Value
 {
-    public String value() throws Exception
+    public String rawValue() throws Exception
     {
         return "none";
     }
@@ -19,6 +19,11 @@ public class _None extends _Value
     public boolean isTrue()
     {
         return false;
+    }
+
+    public _None copy()
+    {
+        return new _None();
     }
 
     public _Value getComparisonEq(_Value other) throws Exception

@@ -15,6 +15,11 @@ public class _Value
 
     public String value() throws Exception
     {
+        return rawValue();
+    }
+
+    public String rawValue() throws Exception
+    {
         throw new Exception("No value method defined");
     }
 

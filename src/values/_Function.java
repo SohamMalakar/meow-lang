@@ -19,7 +19,7 @@ public class _Function extends _BaseFunction
         this.shouldReturnNull = shouldReturnNull;
     }
 
-    public String value() throws Exception
+    public String rawValue() throws Exception
     {
         return "<function " + name + ">";
     }

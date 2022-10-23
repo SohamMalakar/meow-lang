@@ -152,8 +152,7 @@ public class Interpreter
         return value;
     }
 
-    public _Value visit(IfNode node, Context context)
-        throws Exception
+    public _Value visit(IfNode node, Context context) throws Exception
     {
         for (var pair : node.cases)
         {
@@ -175,8 +174,7 @@ public class Interpreter
         return new _None();
     }
 
-    public _Value visit(WhileNode node, Context context)
-        throws Exception
+    public _Value visit(WhileNode node, Context context) throws Exception
     {
         ArrayList<_Value> elements = new ArrayList<>();
 
@@ -215,13 +213,13 @@ public class Interpreter
     {
         ArrayList<_Value> args = new ArrayList<>();
         _Value valueToCall = visit(node.node, context);
-        // valueToCall = valueToCall.copy(); // why?
+        valueToCall = valueToCall.copy(); // why?
 
         for (Node arg : node.args)
             args.add(visit(arg, context));
 
         _Value returnValue = valueToCall.execute(args);
-        // return returnValue.copy();
-        return returnValue;
+        return returnValue.copy().setContext(context);
+        // return returnValue;
     }
 }
