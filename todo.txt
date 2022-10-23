@@ -7,7 +7,7 @@ List comparison
 Logical and Bitwise
 Shorthand
 List mutability
-Built-in functions
+# Built-in functions
 # Multiline support
 Return, Break, Continue
 # Comments
