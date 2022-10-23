@@ -11,9 +11,9 @@ public class Run
 
     static
     {
-        symbolTable = new SymbolTable(null);
         symbolTable.set("print", new _BuiltInFunction("print"));
         symbolTable.set("str", new _BuiltInFunction("str"));
+        symbolTable.set("run", new _BuiltInFunction("run"));
     }
 
     public static void run(String text) throws Exception
