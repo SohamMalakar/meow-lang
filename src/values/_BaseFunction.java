@@ -14,6 +14,11 @@ public class _BaseFunction extends _Value
         this.name = name != null ? name : "<anonymous>";
     }
 
+    public String type() throws Exception
+    {
+        return "function";
+    }
+
     public Context generateNewContext()
     {
         Context newContext = new Context(context);

@@ -24,11 +24,6 @@ public class _Function extends _BaseFunction
         return "<function " + name + ">";
     }
 
-    public String type() throws Exception
-    {
-        return "function";
-    }
-
     public _Value copy()
     {
         return new _Function(name, body, argNames, shouldReturnNull).setContext(context);

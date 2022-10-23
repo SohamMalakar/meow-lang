@@ -30,6 +30,8 @@ public class _None extends _Value
     {
         if (other.getClass() == _Bool.class)
             return ((_Bool)other).getComparisonEq(this);
+        else if (other.getClass() == _BaseFunction.class)
+            return super.getComparisonEq(other);
         else
             return new _Bool(
                 new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(other.type().equals("NoneType")))));
@@ -39,6 +41,8 @@ public class _None extends _Value
     {
         if (other.getClass() == _Bool.class)
             return ((_Bool)other).getComparisonNe(this);
+        else if (other.getClass() == _BaseFunction.class)
+            return super.getComparisonNe(other);
         else
             return new _Bool(
                 new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(!other.type().equals("NoneType")))));

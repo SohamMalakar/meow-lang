@@ -231,6 +231,10 @@ public class _Number extends _Value
         {
             return ((_Bool)other).getComparisonEq(this);
         }
+        else if (other.getClass() == _BaseFunction.class)
+        {
+            return super.getComparisonEq(other);
+        }
 
         return new _Bool(new BoolNode(new Token(TokenType.KEYWORD, "false")));
     }
@@ -251,6 +255,10 @@ public class _Number extends _Value
         else if (other.getClass() == _Bool.class)
         {
             return ((_Bool)other).getComparisonNe(this);
+        }
+        else if (other.getClass() == _BaseFunction.class)
+        {
+            return super.getComparisonNe(other);
         }
 
         return new _Bool(new BoolNode(new Token(TokenType.KEYWORD, "true")));
