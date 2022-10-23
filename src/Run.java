@@ -1,13 +1,20 @@
 package src;
 
 import java.util.ArrayList;
-
 import src.nodes.Node;
+import src.values._BuiltInFunction;
 import src.values._Value;
 
 public class Run
 {
     private static SymbolTable symbolTable = new SymbolTable(null);
+
+    static
+    {
+        symbolTable = new SymbolTable(null);
+        symbolTable.set("print", new _BuiltInFunction("print"));
+        symbolTable.set("str", new _BuiltInFunction("str"));
+    }
 
     public static void run(String text) throws Exception
     {

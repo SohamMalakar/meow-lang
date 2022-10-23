@@ -4,6 +4,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import src.Context;
+import src.Token;
+import src.TokenType;
+import src.nodes.StringNode;
 
 public class _BuiltInFunction extends _BaseFunction
 {
@@ -40,5 +43,18 @@ public class _BuiltInFunction extends _BaseFunction
 
         _Value returnValue = (_Value)method.invoke(this, executeCtx);
         return returnValue;
+    }
+
+    public _Value execute_print(Context execCtx) throws Exception
+    {
+        var value = execCtx.symbolTable.get("arg0");
+        System.out.print(value.rawValue());
+        return new _None();
+    }
+
+    public _Value execute_str(Context execCtx) throws Exception
+    {
+        var value = execCtx.symbolTable.get("arg0");
+        return new _String(new StringNode(new Token(TokenType.STRING, value.rawValue())));
     }
 }
