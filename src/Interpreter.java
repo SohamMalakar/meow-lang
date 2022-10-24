@@ -40,19 +40,20 @@ public class Interpreter
 
     public _Value visit(NumberNode node, Context context)
     {
-        node.token.value = node.token.type == TokenType.INT ? String.valueOf(Integer.parseInt(node.token.value))
-                                                            : String.valueOf(Double.parseDouble(node.token.value));
-        return new _Number(node).setContext(context);
+        boolean isInt = node.token.type == TokenType.INT;
+        node.token.value = isInt ? String.valueOf(Integer.parseInt(node.token.value))
+                                 : String.valueOf(Double.parseDouble(node.token.value));
+        return new _Number(isInt ? "int" : "float", node.token.value).setContext(context);
     }
 
     public _Value visit(BoolNode node, Context context)
     {
-        return new _Bool(node).setContext(context);
+        return new _Bool(node.token.value).setContext(context);
     }
 
     public _Value visit(StringNode node, Context context)
     {
-        return new _String(node).setContext(context);
+        return new _String(node.token.value).setContext(context);
     }
 
     public _Value visit(NoneTypeNode node, Context context)
@@ -118,7 +119,7 @@ public class Interpreter
         _Value value = visit(node.node, context);
 
         if (node.token.type == TokenType.MINUS)
-            value = value.multedBy(new _Number(new NumberNode(new Token(TokenType.INT, "-1"))));
+            value = value.multedBy(new _Number("int", "-1"));
 
         return value;
     }

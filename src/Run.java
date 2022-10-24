@@ -2,7 +2,6 @@ package src;
 
 import java.util.ArrayList;
 import src.nodes.Node;
-import src.nodes.NumberNode;
 import src.values._BuiltInFunction;
 import src.values._List;
 import src.values._Number;
@@ -46,7 +45,7 @@ public class Run
     {
         if (((_List)result).size() == 1)
         {
-            var index = new _Number(new NumberNode(new Token(TokenType.INT, "0")));
+            var index = new _Number("int", "0");
 
             if (!result.get(index).type().equals("NoneType"))
                 System.out.println(result.get(index).value());

@@ -8,9 +8,6 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import src.Context;
 import src.Run;
-import src.Token;
-import src.TokenType;
-import src.nodes.StringNode;
 
 public class _BuiltInFunction extends _BaseFunction
 {
@@ -59,7 +56,7 @@ public class _BuiltInFunction extends _BaseFunction
     public _Value execute_str(Context execCtx) throws Exception
     {
         var value = execCtx.symbolTable.get("arg0");
-        return new _String(new StringNode(new Token(TokenType.STRING, value.rawValue())));
+        return new _String(value.rawValue());
     }
 
     public _Value execute_run(Context execCtx) throws Exception

@@ -1,9 +1,5 @@
 package src.values;
 
-import src.Token;
-import src.TokenType;
-import src.nodes.BoolNode;
-
 public class _None extends _Value
 {
     public String rawValue() throws Exception
@@ -33,8 +29,7 @@ public class _None extends _Value
         else if (other.getClass() == _BaseFunction.class)
             return super.getComparisonEq(other);
         else
-            return new _Bool(
-                new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(other.type().equals("NoneType")))));
+            return new _Bool(Boolean.toString(other.type().equals("NoneType")));
     }
 
     public _Value getComparisonNe(_Value other) throws Exception
@@ -44,7 +39,6 @@ public class _None extends _Value
         else if (other.getClass() == _BaseFunction.class)
             return super.getComparisonNe(other);
         else
-            return new _Bool(
-                new BoolNode(new Token(TokenType.KEYWORD, Boolean.toString(!other.type().equals("NoneType")))));
+            return new _Bool(Boolean.toString(!other.type().equals("NoneType")));
     }
 }
