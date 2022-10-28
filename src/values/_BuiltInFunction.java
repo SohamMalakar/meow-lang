@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import src.Context;
+import src.RTResult;
 import src.Run;
 
 public class _BuiltInFunction extends _BaseFunction
@@ -28,8 +29,9 @@ public class _BuiltInFunction extends _BaseFunction
         return copy;
     }
 
-    public _Value execute(ArrayList<_Value> args) throws Exception
+    public RTResult execute(ArrayList<_Value> args) throws Exception
     {
+        RTResult res = new RTResult();
         Context executeCtx = generateNewContext();
 
         String methodName = "execute_" + name;
@@ -40,26 +42,32 @@ public class _BuiltInFunction extends _BaseFunction
         for (Parameter arg : method.getParameters())
             argNames.add(arg.getName());
 
-        checkAndPopulateArgs(argNames, args, executeCtx);
+        res.register(checkAndPopulateArgs(argNames, args, executeCtx));
 
-        _Value returnValue = (_Value)method.invoke(this, executeCtx);
-        return returnValue;
+        if (res.shouldReturn())
+            return res;
+
+        _Value returnValue = res.register((RTResult)method.invoke(this, executeCtx));
+
+        if (res.shouldReturn())
+            return res;
+        return res.success(returnValue);
     }
 
-    public _Value execute_print(Context execCtx) throws Exception
+    public RTResult execute_print(Context execCtx) throws Exception
     {
         var value = execCtx.symbolTable.get("arg0");
         System.out.print(value.rawValue());
-        return new _None();
+        return new RTResult().success(new _None());
     }
 
-    public _Value execute_str(Context execCtx) throws Exception
+    public RTResult execute_str(Context execCtx) throws Exception
     {
         var value = execCtx.symbolTable.get("arg0");
-        return new _String(value.rawValue());
+        return new RTResult().success(new _String(value.rawValue()));
     }
 
-    public _Value execute_run(Context execCtx) throws Exception
+    public RTResult execute_run(Context execCtx) throws Exception
     {
         var fn = execCtx.symbolTable.get("arg0");
 
@@ -81,6 +89,6 @@ public class _BuiltInFunction extends _BaseFunction
         bufferedReader.close();
 
         Run.run(buffer.toString(), true);
-        return new _None();
+        return new RTResult().success(new _None());
     }
 }

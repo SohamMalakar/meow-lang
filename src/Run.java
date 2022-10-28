@@ -36,21 +36,22 @@ public class Run
         Interpreter interpreter = new Interpreter();
         Context context = new Context(null);
         context.symbolTable = symbolTable;
-        _Value result = interpreter.visit(ast, context);
+        _Value result = new RTResult().register(interpreter.visit(ast, context));
 
-        prettyPrint(result, noEcho);
+        if (!noEcho && result != null)
+            prettyPrint((_List)result);
     }
 
-    private static void prettyPrint(_Value result, boolean noEcho) throws Exception
+    private static void prettyPrint(_List result) throws Exception
     {
-        if (((_List)result).size() == 1)
+        if (result.size() == 1)
         {
             var index = new _Number("int", "0");
 
             if (!result.get(index).type().equals("NoneType"))
                 System.out.println(result.get(index).value());
         }
-        else if (!noEcho)
+        else
         {
             System.out.println(result.value());
         }

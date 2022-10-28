@@ -1,8 +1,8 @@
 package src.values;
 
 import java.util.ArrayList;
-
 import src.Context;
+import src.RTResult;
 import src.SymbolTable;
 
 public class _BaseFunction extends _Value
@@ -26,12 +26,14 @@ public class _BaseFunction extends _Value
         return newContext;
     }
 
-    private void checkArgs(ArrayList<String> argNames, ArrayList<_Value> argValues) throws Exception
+    private RTResult checkArgs(ArrayList<String> argNames, ArrayList<_Value> argValues) throws Exception
     {
         if (argValues.size() > argNames.size())
             throw new Exception(argValues.size() - argNames.size() + " too many arguments passed into '" + name + "'");
         else if (argValues.size() < argNames.size())
             throw new Exception(argNames.size() - argValues.size() + " too few arguments passed into '" + name + "'");
+
+        return new RTResult().success(new _None());
     }
 
     private void populateArgs(ArrayList<String> argNames, ArrayList<_Value> argValues, Context execCtx)
@@ -45,10 +47,16 @@ public class _BaseFunction extends _Value
         }
     }
 
-    public void checkAndPopulateArgs(ArrayList<String> argNames, ArrayList<_Value> argValues, Context context)
+    public RTResult checkAndPopulateArgs(ArrayList<String> argNames, ArrayList<_Value> argValues, Context context)
         throws Exception
     {
-        checkArgs(argNames, argValues);
+        RTResult res = new RTResult();
+        res.register(checkArgs(argNames, argValues));
+
+        if (res.shouldReturn())
+            return res;
+
         populateArgs(argNames, argValues, context);
+        return res.success(new _None());
     }
 }

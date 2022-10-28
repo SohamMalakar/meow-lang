@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import src.nodes.AlternateAssignNode;
 import src.nodes.BinOpNode;
 import src.nodes.BoolNode;
+import src.nodes.BreakNode;
 import src.nodes.CallNode;
+import src.nodes.ContinueNode;
 import src.nodes.FuncDefNode;
 import src.nodes.IfNode;
 import src.nodes.ListNode;
 import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
+import src.nodes.ReturnNode;
 import src.nodes.StringNode;
 import src.nodes.SubscriptableNode;
 import src.nodes.UnaryOpNode;
@@ -60,7 +63,7 @@ public class Parser
         while (currentToken != null && currentToken.type == TokenType.NEWLINE)
             advance();
 
-        Node statement = expr();
+        Node statement = statement();
         statements.add(statement);
 
         int newlineCount;
@@ -86,7 +89,7 @@ public class Parser
 
             try
             {
-                statement = expr();
+                statement = statement();
             }
             catch (Exception e)
             {
@@ -103,6 +106,42 @@ public class Parser
             advance();
 
         return new ListNode(statements);
+    }
+
+    private Node statement() throws Exception
+    {
+        if (currentToken != null)
+        {
+            if (currentToken.matches(TokenType.KEYWORD, "return"))
+            {
+                advance();
+                Node expr = null;
+                int checkPoint = position;
+
+                try
+                {
+                    expr = expr();
+                }
+                catch (Exception e)
+                {
+                    currentToken = (position = checkPoint) < tokens.size() ? tokens.get(position) : null;
+                }
+
+                return new ReturnNode(expr);
+            }
+            else if (currentToken.matches(TokenType.KEYWORD, "break"))
+            {
+                advance();
+                return new BreakNode();
+            }
+            else if (currentToken.matches(TokenType.KEYWORD, "continue"))
+            {
+                advance();
+                return new ContinueNode();
+            }
+        }
+
+        return expr();
     }
 
     private Node expr() throws Exception
@@ -394,7 +433,7 @@ public class Parser
             }
             else
             {
-                Node expr = expr();
+                Node expr = statement();
                 elseCase = new Pair<>(expr, false);
             }
         }
@@ -460,7 +499,7 @@ public class Parser
         }
         else
         {
-            Node expr = expr();
+            Node expr = statement();
             cases.add(new Pair<>(new Pair<>(condition, expr), false));
 
             var allCases = ifExprBOrC();
@@ -500,7 +539,7 @@ public class Parser
             return new WhileNode(condition, body, true);
         }
 
-        Node body = expr();
+        Node body = statement();
 
         return new WhileNode(condition, body, false);
     }
@@ -563,7 +602,7 @@ public class Parser
         {
             advance();
             Node body = expr();
-            return new FuncDefNode(varName, args, body, false);
+            return new FuncDefNode(varName, args, body, true);
         }
 
         if (currentToken == null || currentToken.type != TokenType.NEWLINE)
@@ -576,6 +615,6 @@ public class Parser
             throw new Exception("Expected 'end'");
 
         advance();
-        return new FuncDefNode(varName, args, body, true);
+        return new FuncDefNode(varName, args, body, false);
     }
 }

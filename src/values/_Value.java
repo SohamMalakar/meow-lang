@@ -2,6 +2,7 @@ package src.values;
 
 import java.util.ArrayList;
 import src.Context;
+import src.RTResult;
 
 public class _Value
 {
@@ -43,7 +44,7 @@ public class _Value
         throw new Exception("No get method defined");
     }
 
-    public _Value execute(ArrayList<_Value> args) throws Exception
+    public RTResult execute(ArrayList<_Value> args) throws Exception
     {
         throw new Exception("No execute method defined");
     }

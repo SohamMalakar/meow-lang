@@ -1,5 +1,7 @@
+Long
 # String
 Foreach
+Syntax
 Unit tests
 # Arithmetic
 # Comparison
@@ -9,7 +11,7 @@ Shorthand
 List mutability
 # Built-in functions
 # Multiline support
-Return, Break, Continue
+# Return, Break, Continue
 # Comments
 # Should return parameter
 Error definition

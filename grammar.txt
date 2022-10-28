@@ -1,4 +1,9 @@
-statements  : NEWLINE* expr (NEWLINE+ expr)* NEWLINE*
+statements  : NEWLINE* statement (NEWLINE+ statement)* NEWLINE*
+
+statement   : KEYWORD:return expr?
+            : KEYWORD:break
+            : KEYWORD:continue
+            : expr
 
 expr        : IDENTIFIER EQ|ASSIGN expr
             : comp-expr
@@ -26,19 +31,19 @@ atom        : INT|FLOAT|BOOL|STRING|NONE|IDENTIFIER
 list-expr   : LSQUARE (expr (COMMA expr)*)? RSQUARE
 
 if-expr     : KEYWORD:if expr KEYWORD:then
-              (expr if-expr-b|if-expr-c?)
+              (statement if-expr-b|if-expr-c?)
             | (NEWLINE statements KEYWORD:end|if-expr-b|if-expr-c)
 
 if-expr-b   : KEYWORD:elif expr KEYWORD:then
-              (expr if-expr-b|if-expr-c?)
+              (statement if-expr-b|if-expr-c?)
             | (NEWLINE statements KEYWORD:end|if-expr-b|if-expr-c)
 
 if-expr-c   : KEYWORD:else
-              expr
+              statement
             | (NEWLINE statements KEYWORD:end)
 
 while-expr  : KEYWORD:while expr KEYWORD:then
-              expr
+              statement
             | (NEWLINE statements KEYWORD:end)
 
 func-def    : KEYWORD:def IDENTIFIER?

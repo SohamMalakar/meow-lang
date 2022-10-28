@@ -1,0 +1,40 @@
+#!/usr/bin/env meow
+
+def add(a, b)
+    return def add(c, d)
+        return a + b + c + d
+    end
+end
+
+i = 0
+
+while (i < 10) then
+    i = i + 1
+    if (i == 5) then
+        continue
+    else if (i == 8) then
+        break
+    end
+    print(str(i) + " ")
+end
+
+print("\n")
+
+i = 0
+
+while (true) then
+    print(str(i) + " ")
+    if (i < 4) then
+        i = i + 1
+    elif (i < 9) then
+        i = i + 2
+    else
+        break
+    end
+end
+
+print("\n")
+
+def minus(a, b) -> def minus(c, d) -> a - b - c - d
+
+def fact(x) -> if x == 1 then x else x * fact(x - 1)

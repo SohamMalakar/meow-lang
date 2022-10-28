@@ -1,7 +1,6 @@
 package src.nodes;
 
 import java.util.ArrayList;
-
 import src.Token;
 
 public class FuncDefNode extends Node
@@ -9,14 +8,14 @@ public class FuncDefNode extends Node
     public Token varName;
     public ArrayList<Token> args;
     public Node body;
-    public boolean shouldReturnNull;
+    public boolean shouldAutoReturn;
 
-    public FuncDefNode(Token varName, ArrayList<Token> args, Node body, boolean shouldReturnNull)
+    public FuncDefNode(Token varName, ArrayList<Token> args, Node body, boolean shouldAutoReturn)
     {
         this.varName = varName;
         this.args = args;
         this.body = body;
-        this.shouldReturnNull = shouldReturnNull;
+        this.shouldAutoReturn = shouldAutoReturn;
     }
 
     public String repr() throws Exception
