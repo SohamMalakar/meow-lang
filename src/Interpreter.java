@@ -129,6 +129,10 @@ public class Interpreter
             result = left.getComparisonLte(right);
         else if (node.token.type == TokenType.GTE)
             result = left.getComparisonGte(right);
+        else if (node.token.matches(TokenType.KEYWORD, "and"))
+            result = left.andedBy(right);
+        else if (node.token.matches(TokenType.KEYWORD, "or"))
+            result = left.oredBy(right);
 
         return res.success(result);
     }
@@ -143,6 +147,8 @@ public class Interpreter
 
         if (node.token.type == TokenType.MINUS)
             value = value.multedBy(new _Number("int", "-1"));
+        else if (node.token.matches(TokenType.KEYWORD, "not"))
+            value = value.notted();
 
         return res.success(value);
     }

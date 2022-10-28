@@ -6,7 +6,8 @@ Unit tests
 # Arithmetic
 # Comparison
 List comparison
-Logical and Bitwise
+# Logical
+Bitwise
 Shorthand
 List mutability
 # Built-in functions

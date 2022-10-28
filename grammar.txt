@@ -6,9 +6,14 @@ statement   : KEYWORD:return expr?
             : expr
 
 expr        : IDENTIFIER EQ|ASSIGN expr
-            : comp-expr
+            : or-expr
 
-comp-expr   : arith-expr ((EE|NE|LT|GT|LTE|GTE) arith-expr)*
+or-expr     : and-expr (KEYWORD:or and-expr)*
+
+and-expr    : comp-expr (KEYWORD:and comp-expr)*
+
+comp-expr   : KEYWORD:not comp-expr
+            : arith-expr ((EE|NE|LT|GT|LTE|GTE) arith-expr)*
 
 arith-expr  : term ((PLUS|MINUS) term)*
 

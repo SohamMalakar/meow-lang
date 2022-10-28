@@ -167,11 +167,49 @@ public class Parser
             }
         }
 
-        return compExpr();
+        return orExpr();
+    }
+
+    private Node orExpr() throws Exception
+    {
+        Node left = andExpr();
+
+        while (currentToken != null && currentToken.matches(TokenType.KEYWORD, "or"))
+        {
+            Token token = currentToken;
+            advance();
+            Node right = andExpr();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
+    }
+
+    private Node andExpr() throws Exception
+    {
+        Node left = compExpr();
+
+        while (currentToken != null && currentToken.matches(TokenType.KEYWORD, "and"))
+        {
+            Token token = currentToken;
+            advance();
+            Node right = compExpr();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
     }
 
     private Node compExpr() throws Exception
     {
+        if (currentToken != null && currentToken.matches(TokenType.KEYWORD, "not"))
+        {
+            Token token = currentToken;
+            advance();
+            Node compExpr = compExpr();
+            return new UnaryOpNode(token, compExpr);
+        }
+
         Node left = arithExpr();
 
         while (currentToken != null && (currentToken.type == TokenType.EE || currentToken.type == TokenType.NE ||

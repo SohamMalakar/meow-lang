@@ -114,6 +114,25 @@ public class _Value
         return illegalOperation(other, ">=");
     }
 
+    public _Value andedBy(_Value other) throws Exception
+    {
+        if (!this.isTrue())
+            return this;
+        return other;
+    }
+
+    public _Value oredBy(_Value other) throws Exception
+    {
+        if (this.isTrue())
+            return this;
+        return other;
+    }
+
+    public _Value notted() throws Exception
+    {
+        return new _Bool(Boolean.toString(!isTrue()));
+    }
+
     private _Value illegalOperation(_Value other, String operator) throws Exception
     {
         throw new Exception("TypeError: unsupported operand type(s) for " + operator + ": '" + type() + "' and '" +
