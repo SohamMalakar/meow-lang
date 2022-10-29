@@ -117,6 +117,16 @@ public class Interpreter
             result = left.moduloBy(right);
         else if (node.token.type == TokenType.POW)
             result = left.poweredBy(right);
+        else if (node.token.type == TokenType.BITAND)
+            result = left.bitandedBy(right);
+        else if (node.token.type == TokenType.BITOR)
+            result = left.bitoredBy(right);
+        else if (node.token.type == TokenType.XOR)
+            result = left.xoredBy(right);
+        else if (node.token.type == TokenType.LSHIFT)
+            result = left.lshiftedBy(right);
+        else if (node.token.type == TokenType.RSHIFT)
+            result = left.rshiftedBy(right);
         else if (node.token.type == TokenType.EE)
             result = left.getComparisonEq(right);
         else if (node.token.type == TokenType.NE)
@@ -149,6 +159,8 @@ public class Interpreter
             value = value.multedBy(new _Number("int", "-1"));
         else if (node.token.matches(TokenType.KEYWORD, "not"))
             value = value.notted();
+        else if (node.token.type == TokenType.BITNOT)
+            value = value.bitnotted();
 
         return res.success(value);
     }

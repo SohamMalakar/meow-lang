@@ -13,13 +13,21 @@ or-expr     : and-expr (KEYWORD:or and-expr)*
 and-expr    : comp-expr (KEYWORD:and comp-expr)*
 
 comp-expr   : KEYWORD:not comp-expr
-            : arith-expr ((EE|NE|LT|GT|LTE|GTE) arith-expr)*
+            : bit-or-expr ((EE|NE|LT|GT|LTE|GTE) bit-or-expr)*
+
+bit-or-expr : bit-xor-expr (BITOR bit-xor-expr)*
+
+bit-xor-expr  : bit-and-expr (XOR bit-and-expr)*
+
+bit-and-expr  : shift-expr (BITAND shift-expr)*
+
+shift-expr  : arith-expr ((LSHIFT|RSHIFT) arith-expr)*
 
 arith-expr  : term ((PLUS|MINUS) term)*
 
 term        : factor ((MUL|DIV|INTDIV|MOD) factor)*
 
-factor      : (PLUS|MINUS) factor
+factor      : (PLUS|MINUS|BITNOT) factor
             : power
 
 power       : call (POW factor)*

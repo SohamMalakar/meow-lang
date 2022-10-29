@@ -263,4 +263,57 @@ public class _Number extends _Value
         else
             return new _Bool(Boolean.toString(Double.parseDouble(this.value()) >= Double.parseDouble(other.value())));
     }
+
+    public _Value bitandedBy(_Value other) throws Exception
+    {
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Number("int",
+                               Integer.toString(Integer.parseInt(this.value()) & Integer.parseInt(other.value())));
+
+        return super.bitandedBy(other);
+    }
+
+    public _Value bitoredBy(_Value other) throws Exception
+    {
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Number("int",
+                               Integer.toString(Integer.parseInt(this.value()) | Integer.parseInt(other.value())));
+
+        return super.bitoredBy(other);
+    }
+
+    public _Value bitnotted() throws Exception
+    {
+        if (this.type().equals("int"))
+            return new _Number("int", Integer.toString(~Integer.parseInt(this.value())));
+
+        return super.bitnotted();
+    }
+
+    public _Value xoredBy(_Value other) throws Exception
+    {
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Number("int",
+                               Integer.toString(Integer.parseInt(this.value()) ^ Integer.parseInt(other.value())));
+
+        return super.xoredBy(other);
+    }
+
+    public _Value lshiftedBy(_Value other) throws Exception
+    {
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Number("int",
+                               Integer.toString(Integer.parseInt(this.value()) << Integer.parseInt(other.value())));
+
+        return super.lshiftedBy(other);
+    }
+
+    public _Value rshiftedBy(_Value other) throws Exception
+    {
+        if (this.type().equals("int") && other.type().equals("int"))
+            return new _Number("int",
+                               Integer.toString(Integer.parseInt(this.value()) >> Integer.parseInt(other.value())));
+
+        return super.rshiftedBy(other);
+    }
 }

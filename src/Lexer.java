@@ -74,6 +74,26 @@ public class Lexer
                 tokens.add(new Token(TokenType.MOD));
                 advance();
             }
+            else if (currentChar == '&')
+            {
+                tokens.add(new Token(TokenType.BITAND));
+                advance();
+            }
+            else if (currentChar == '|')
+            {
+                tokens.add(new Token(TokenType.BITOR));
+                advance();
+            }
+            else if (currentChar == '~')
+            {
+                tokens.add(new Token(TokenType.BITNOT));
+                advance();
+            }
+            else if (currentChar == '^')
+            {
+                tokens.add(new Token(TokenType.XOR));
+                advance();
+            }
             else if (currentChar == '=')
             {
                 tokens.add(makeEquals());
@@ -197,10 +217,18 @@ public class Lexer
         TokenType type = TokenType.LT;
         advance();
 
-        if (currentChar != null && currentChar == '=')
+        if (currentChar != null)
         {
-            type = TokenType.LTE;
-            advance();
+            if (currentChar == '=')
+            {
+                type = TokenType.LTE;
+                advance();
+            }
+            else if (currentChar == '<')
+            {
+                type = TokenType.LSHIFT;
+                advance();
+            }
         }
 
         return new Token(type);
@@ -211,10 +239,18 @@ public class Lexer
         TokenType type = TokenType.GT;
         advance();
 
-        if (currentChar != null && currentChar == '=')
+        if (currentChar != null)
         {
-            type = TokenType.GTE;
-            advance();
+            if (currentChar == '=')
+            {
+                type = TokenType.GTE;
+                advance();
+            }
+            else if (currentChar == '>')
+            {
+                type = TokenType.RSHIFT;
+                advance();
+            }
         }
 
         return new Token(type);

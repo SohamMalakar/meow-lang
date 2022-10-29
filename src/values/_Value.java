@@ -133,6 +133,41 @@ public class _Value
         return new _Bool(Boolean.toString(!isTrue()));
     }
 
+    public _Value bitandedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "&");
+    }
+
+    public _Value bitoredBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "|");
+    }
+
+    public _Value xoredBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "^");
+    }
+
+    public _Value lshiftedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "<<");
+    }
+
+    public _Value rshiftedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, ">>");
+    }
+
+    public _Value bitnotted() throws Exception
+    {
+        return illegalOperation("~");
+    }
+
+    private _Value illegalOperation(String operator) throws Exception
+    {
+        throw new Exception("TypeError: bad operand type for unary " + operator + ": " + type());
+    }
+
     private _Value illegalOperation(_Value other, String operator) throws Exception
     {
         throw new Exception("TypeError: unsupported operand type(s) for " + operator + ": '" + type() + "' and '" +

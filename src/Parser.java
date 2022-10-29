@@ -210,11 +210,71 @@ public class Parser
             return new UnaryOpNode(token, compExpr);
         }
 
-        Node left = arithExpr();
+        Node left = bitOrExpr();
 
         while (currentToken != null && (currentToken.type == TokenType.EE || currentToken.type == TokenType.NE ||
                                         currentToken.type == TokenType.LT || currentToken.type == TokenType.GT ||
                                         currentToken.type == TokenType.LTE || currentToken.type == TokenType.GTE))
+        {
+            Token token = currentToken;
+            advance();
+            Node right = bitOrExpr();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
+    }
+
+    private Node bitOrExpr() throws Exception
+    {
+        Node left = bitXorExpr();
+
+        while (currentToken != null && currentToken.type == TokenType.BITOR)
+        {
+            Token token = currentToken;
+            advance();
+            Node right = bitXorExpr();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
+    }
+
+    private Node bitXorExpr() throws Exception
+    {
+        Node left = bitAndExpr();
+
+        while (currentToken != null && currentToken.type == TokenType.XOR)
+        {
+            Token token = currentToken;
+            advance();
+            Node right = bitAndExpr();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
+    }
+
+    private Node bitAndExpr() throws Exception
+    {
+        Node left = shiftExpr();
+
+        while (currentToken != null && currentToken.type == TokenType.BITAND)
+        {
+            Token token = currentToken;
+            advance();
+            Node right = shiftExpr();
+            left = new BinOpNode(left, token, right);
+        }
+
+        return left;
+    }
+
+    private Node shiftExpr() throws Exception
+    {
+        Node left = arithExpr();
+
+        while (currentToken != null && (currentToken.type == TokenType.LSHIFT || currentToken.type == TokenType.RSHIFT))
         {
             Token token = currentToken;
             advance();
@@ -258,7 +318,8 @@ public class Parser
 
     private Node factor() throws Exception
     {
-        if (currentToken != null && (currentToken.type == TokenType.PLUS || currentToken.type == TokenType.MINUS))
+        if (currentToken != null && (currentToken.type == TokenType.PLUS || currentToken.type == TokenType.MINUS ||
+                                     currentToken.type == TokenType.BITNOT))
         {
             Token token = currentToken;
             advance();
