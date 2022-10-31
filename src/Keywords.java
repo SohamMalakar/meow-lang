@@ -15,6 +15,12 @@ public class Keywords
         values.add("while");
         values.add("def");
         values.add("end");
+        values.add("return");
+        values.add("break");
+        values.add("continue");
+        values.add("and");
+        values.add("or");
+        values.add("not");
         values.add("true");
         values.add("false");
         values.add("none");

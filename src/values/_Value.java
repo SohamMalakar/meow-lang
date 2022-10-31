@@ -1,8 +1,8 @@
 package src.values;
 
 import java.util.ArrayList;
-
 import src.Context;
+import src.RTResult;
 
 public class _Value
 {
@@ -16,6 +16,11 @@ public class _Value
 
     public String value() throws Exception
     {
+        return rawValue();
+    }
+
+    public String rawValue() throws Exception
+    {
         throw new Exception("No value method defined");
     }
 
@@ -24,9 +29,9 @@ public class _Value
         throw new Exception("No type method defined");
     }
 
-    public boolean isTrue()
+    public boolean isTrue() throws Exception
     {
-        return false;
+        throw new Exception("No isTrue method defined");
     }
 
     public _Value copy() throws Exception
@@ -39,32 +44,133 @@ public class _Value
         throw new Exception("No get method defined");
     }
 
-    public _Value execute(ArrayList<_Value> args) throws Exception
+    public RTResult execute(ArrayList<_Value> args) throws Exception
     {
         throw new Exception("No execute method defined");
     }
 
     public _Value addedTo(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for +: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "+");
     }
 
     public _Value subbedBy(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for -: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "-");
     }
 
     public _Value multedBy(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for *: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "*");
     }
 
     public _Value divedBy(_Value other) throws Exception
     {
-        throw new Exception("TypeError: unsupported operand type(s) for /: '" + type() + "' and '" + other.type() +
-                            "'");
+        return illegalOperation(other, "/");
+    }
+
+    public _Value intdivedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "//");
+    }
+
+    public _Value moduloBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "%");
+    }
+
+    public _Value poweredBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "**");
+    }
+
+    public _Value getComparisonEq(_Value other) throws Exception
+    {
+        return illegalOperation(other, "==");
+    }
+
+    public _Value getComparisonNe(_Value other) throws Exception
+    {
+        return illegalOperation(other, "!=");
+    }
+
+    public _Value getComparisonLt(_Value other) throws Exception
+    {
+        return illegalOperation(other, "<");
+    }
+
+    public _Value getComparisonGt(_Value other) throws Exception
+    {
+        return illegalOperation(other, ">");
+    }
+
+    public _Value getComparisonLte(_Value other) throws Exception
+    {
+        return illegalOperation(other, "<=");
+    }
+
+    public _Value getComparisonGte(_Value other) throws Exception
+    {
+        return illegalOperation(other, ">=");
+    }
+
+    public _Value andedBy(_Value other) throws Exception
+    {
+        if (!this.isTrue())
+            return this;
+        return other;
+    }
+
+    public _Value oredBy(_Value other) throws Exception
+    {
+        if (this.isTrue())
+            return this;
+        return other;
+    }
+
+    public _Value notted() throws Exception
+    {
+        return new _Bool(Boolean.toString(!isTrue()));
+    }
+
+    public _Value bitandedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "&");
+    }
+
+    public _Value bitoredBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "|");
+    }
+
+    public _Value xoredBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "^");
+    }
+
+    public _Value lshiftedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, "<<");
+    }
+
+    public _Value rshiftedBy(_Value other) throws Exception
+    {
+        return illegalOperation(other, ">>");
+    }
+
+    public _Value bitnotted() throws Exception
+    {
+        return illegalOperation("~");
+    }
+
+    private _Value illegalOperation(String operator) throws Exception
+    {
+        throw new Exception("TypeError: bad operand type for unary " + operator + ": " + type());
+    }
+
+    private _Value illegalOperation(_Value other, String operator) throws Exception
+    {
+        throw new Exception("TypeError: unsupported operand type(s) for " + operator + ": '" + type() + "' and '" +
+                            other.type() + "'");
     }
 }

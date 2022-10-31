@@ -1,10 +1,25 @@
-String
+Long
+# String
+Maybe modify string implementation approach: escape sequence
 Foreach
+Syntax
 Unit tests
-Arithmetic
-Comparison
+# Arithmetic
+# Comparison
+List comparison
+# Logical
+# Bitwise
+Shorthand
 List mutability
-Built-in functions
-Multiline support
-Return, Break, Continue
-Should return parameter
+# Built-in functions
+More functions: input, len, append, etc.
+Minus operator with 'str'
+Implicit string conversion while concatenating
+Command line arguments
+# Multiline support
+# Return, Break, Continue
+# Comments
+Multiline comments
+# Should return parameter
+Error definition
+Dictionaries: maybe add a new value type

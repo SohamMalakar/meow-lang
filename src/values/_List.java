@@ -11,7 +11,12 @@ public class _List extends _Value
         this.elements = elements;
     }
 
-    public String value() throws Exception
+    public int size()
+    {
+        return elements.size();
+    }
+
+    public String rawValue() throws Exception
     {
         String str = "[";
 
@@ -36,14 +41,15 @@ public class _List extends _Value
         ArrayList<_Value> newElements = new ArrayList<_Value>();
 
         for (var element : elements)
-            newElements.add(element.copy());
+            // newElements.add(element.copy());
+            newElements.add(element); // why?
 
         return (_List) new _List(newElements).setContext(context);
     }
 
     public _Value get(_Value other) throws Exception
     {
-        if (other.getClass() == _Number.class && other.type() == "int")
+        if (other.type().equals("int"))
             return elements.get(Integer.parseInt(other.value())).setContext(context);
 
         return super.get(other);
@@ -52,7 +58,7 @@ public class _List extends _Value
     public _List addedTo(_Value other) throws Exception
     {
         if (other.getClass() != _List.class)
-            super.addedTo(other);
+            return (_List)super.addedTo(other);
 
         _List newList = copy();
 
@@ -64,8 +70,8 @@ public class _List extends _Value
 
     public _List multedBy(_Value other) throws Exception
     {
-        if (other.getClass() != _Number.class || !other.type().equals("int"))
-            super.addedTo(other);
+        if (!other.type().equals("int"))
+            return (_List)super.multedBy(other);
 
         ArrayList<_Value> newElements = new ArrayList<>();
 

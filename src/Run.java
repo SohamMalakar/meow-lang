@@ -1,15 +1,24 @@
 package src;
 
 import java.util.ArrayList;
-
 import src.nodes.Node;
+import src.values._BuiltInFunction;
+import src.values._List;
+import src.values._Number;
 import src.values._Value;
 
 public class Run
 {
     private static SymbolTable symbolTable = new SymbolTable(null);
 
-    public static void run(String text) throws Exception
+    static
+    {
+        symbolTable.set("print", new _BuiltInFunction("print"));
+        symbolTable.set("str", new _BuiltInFunction("str"));
+        symbolTable.set("run", new _BuiltInFunction("run"));
+    }
+
+    public static void run(String text, boolean noEcho) throws Exception
     {
         Lexer lexer = new Lexer(text);
         ArrayList<Token> tokens = lexer.makeTokens();
@@ -27,8 +36,24 @@ public class Run
         Interpreter interpreter = new Interpreter();
         Context context = new Context(null);
         context.symbolTable = symbolTable;
-        _Value result = interpreter.visit(ast, context);
+        _Value result = new RTResult().register(interpreter.visit(ast, context));
 
-        System.out.println(result.value());
+        if (!noEcho && result != null)
+            prettyPrint((_List)result);
+    }
+
+    private static void prettyPrint(_List result) throws Exception
+    {
+        if (result.size() == 1)
+        {
+            var index = new _Number("int", "0");
+
+            if (!result.get(index).type().equals("NoneType"))
+                System.out.println(result.get(index).value());
+        }
+        else
+        {
+            System.out.println(result.value());
+        }
     }
 }

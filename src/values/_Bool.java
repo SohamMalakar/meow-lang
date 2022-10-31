@@ -1,19 +1,17 @@
 package src.values;
 
-import src.nodes.BoolNode;
-
 public class _Bool extends _Value
 {
-    private BoolNode node;
+    private String value;
 
-    public _Bool(BoolNode node)
+    public _Bool(String value)
     {
-        this.node = node;
+        this.value = value;
     }
 
-    public String value()
+    public String rawValue()
     {
-        return node.token.value;
+        return value;
     }
 
     public String type()
@@ -21,13 +19,29 @@ public class _Bool extends _Value
         return "bool";
     }
 
-    public boolean isTrue()
+    public boolean isTrue() throws Exception
     {
         return value().equals("true");
     }
 
     public _Bool copy()
     {
-        return (_Bool) new _Bool(node).setContext(context);
+        return (_Bool) new _Bool(value).setContext(context);
+    }
+
+    public _Value getComparisonEq(_Value other) throws Exception
+    {
+        if (other.getClass() == _BaseFunction.class)
+            return super.getComparisonEq(other);
+
+        return new _Bool(Boolean.toString(this.isTrue() == other.isTrue()));
+    }
+
+    public _Value getComparisonNe(_Value other) throws Exception
+    {
+        if (other.getClass() == _BaseFunction.class)
+            return super.getComparisonNe(other);
+
+        return new _Bool(Boolean.toString(this.isTrue() != other.isTrue()));
     }
 }
