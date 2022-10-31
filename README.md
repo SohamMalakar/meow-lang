@@ -17,3 +17,7 @@ javac -d ./target/classes ./src/*.java
 cd ./target/classes
 java src.Shell
 ```
+
+### Thanks
+
+Special thanks to [@thearcodas](https://github.com/thearcodas/) for making this adorable logo.
