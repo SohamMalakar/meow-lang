@@ -1,7 +1,11 @@
 
-## The Meow Language
-
-meow meow meow me...
+<h1 align="center">
+  <br>
+    <img src="logo/logo.png" alt="logo" width="250">
+  <br><br>
+  The Meow Language
+  <br><br>
+</h1>
 
 ### Build instructions
 
