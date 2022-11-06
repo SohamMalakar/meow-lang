@@ -81,4 +81,114 @@ public class _List extends _Value
 
         return new _List(newElements);
     }
+
+    public _Value getComparisonEq(_Value other) throws Exception
+    {
+        if (!this.type().equals(other.type()))
+            return super.getComparisonEq(other);
+
+        if (this.size() != ((_List)other).size())
+            return new _Bool(Boolean.toString(false));
+
+        for (int i = 0; i < this.size(); i++)
+        {
+            var index = new _Number("int", Integer.toString(i));
+
+            if (!this.get(index).getComparisonEq(other.get(index)).isTrue())
+                return new _Bool(Boolean.toString(false));
+        }
+
+        return new _Bool(Boolean.toString(true));
+    }
+
+    public _Value getComparisonNe(_Value other) throws Exception
+    {
+        if (!this.type().equals(other.type()))
+            return super.getComparisonNe(other);
+
+        if (this.size() != ((_List)other).size())
+            return new _Bool(Boolean.toString(true));
+
+        for (int i = 0; i < this.size(); i++)
+        {
+            var index = new _Number("int", Integer.toString(i));
+
+            if (!this.get(index).getComparisonEq(other.get(index)).isTrue())
+                return new _Bool(Boolean.toString(true));
+        }
+
+        return new _Bool(Boolean.toString(false));
+    }
+
+    public _Value getComparisonLt(_Value other) throws Exception
+    {
+        if (!this.type().equals(other.type()))
+            return super.getComparisonLt(other);
+
+        int size = this.size() < ((_List)other).size() ? this.size() : ((_List)other).size();
+
+        for (int i = 0; i < size; i++)
+        {
+            var index = new _Number("int", Integer.toString(i));
+
+            if (!this.get(index).getComparisonEq(other.get(index)).isTrue())
+                return new _Bool(Boolean.toString(this.get(index).getComparisonLt(other.get(index)).isTrue()));
+        }
+
+        return new _Bool(Boolean.toString(this.size() < ((_List)other).size()));
+    }
+
+    public _Value getComparisonGt(_Value other) throws Exception
+    {
+        if (!this.type().equals(other.type()))
+            return super.getComparisonGt(other);
+
+        int size = this.size() < ((_List)other).size() ? this.size() : ((_List)other).size();
+
+        for (int i = 0; i < size; i++)
+        {
+            var index = new _Number("int", Integer.toString(i));
+
+            if (!this.get(index).getComparisonEq(other.get(index)).isTrue())
+                return new _Bool(Boolean.toString(this.get(index).getComparisonGt(other.get(index)).isTrue()));
+        }
+
+        return new _Bool(Boolean.toString(this.size() > ((_List)other).size()));
+    }
+
+    public _Value getComparisonLte(_Value other) throws Exception
+    {
+        if (!this.type().equals(other.type()))
+            return super.getComparisonLte(other);
+
+        int size = this.size() < ((_List)other).size() ? this.size() : ((_List)other).size();
+
+        for (int i = 0; i < size; i++)
+        {
+            var index = new _Number("int", Integer.toString(i));
+
+            if (!this.get(index).getComparisonEq(other.get(index)).isTrue())
+                return new _Bool(Boolean.toString(this.get(index).getComparisonLte(other.get(index)).isTrue()));
+        }
+
+        return new _Bool(Boolean.toString(this.size() <= ((_List)other).size()));
+    }
+
+    public _Value getComparisonGte(_Value other) throws Exception
+    {
+        if (!this.type().equals(other.type()))
+            return super.getComparisonGte(other);
+
+        int size = this.size() < ((_List)other).size() ? this.size() : ((_List)other).size();
+
+        for (int i = 0; i < size; i++)
+        {
+            var index = new _Number("int", Integer.toString(i));
+
+            if (!this.get(index).getComparisonEq(other.get(index)).isTrue())
+                return new _Bool(Boolean.toString(this.get(index).getComparisonGte(other.get(index)).isTrue()));
+        }
+
+        return new _Bool(Boolean.toString(this.size() >= ((_List)other).size()));
+    }
 }

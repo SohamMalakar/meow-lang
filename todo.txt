@@ -6,7 +6,7 @@ Syntax
 Unit tests
 # Arithmetic
 # Comparison
-List comparison
+# List comparison
 # Logical
 # Bitwise
 Shorthand
