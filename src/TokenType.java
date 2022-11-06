@@ -34,6 +34,5 @@ public enum TokenType
     RSQUARE,
     COMMA,
     ARROW,
-    NEWLINE,
-    EOF
+    NEWLINE
 }

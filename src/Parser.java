@@ -50,7 +50,7 @@ public class Parser
     {
         Node ast = statements();
 
-        if (currentToken != null && currentToken.type != TokenType.EOF)
+        if (currentToken != null)
             throw new Exception("SyntaxError: expected a newline or EOF");
 
         return ast;
