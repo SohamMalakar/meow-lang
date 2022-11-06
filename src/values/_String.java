@@ -70,8 +70,6 @@ public class _String extends _Value
     {
         if (other.getClass() == _String.class)
             return new _Bool(Boolean.toString(this.value().equals(other.value())));
-        else if (other.getClass() == _Bool.class)
-            return ((_Bool)other).getComparisonEq(this);
         else if (other.getClass() == _BaseFunction.class)
             return super.getComparisonEq(other);
 
@@ -82,8 +80,6 @@ public class _String extends _Value
     {
         if (other.getClass() == _String.class)
             return new _Bool(Boolean.toString(!this.value().equals(other.value())));
-        else if (other.getClass() == _Bool.class)
-            return ((_Bool)other).getComparisonNe(this);
         else if (other.getClass() == _BaseFunction.class)
             return super.getComparisonNe(other);
 

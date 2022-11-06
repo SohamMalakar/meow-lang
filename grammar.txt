@@ -1,65 +1,65 @@
-statements  : NEWLINE* statement (NEWLINE+ statement)* NEWLINE*
+statements    : NEWLINE* statement (NEWLINE+ statement)* NEWLINE*
 
-statement   : KEYWORD:return expr?
-            : KEYWORD:break
-            : KEYWORD:continue
-            : expr
+statement     : KEYWORD:return expr?
+              : KEYWORD:break
+              : KEYWORD:continue
+              : expr
 
-expr        : IDENTIFIER EQ|ASSIGN expr
-            : or-expr
+expr          : IDENTIFIER EQ|ASSIGN expr
+              : or-expr
 
-or-expr     : and-expr (KEYWORD:or and-expr)*
+or-expr       : and-expr (KEYWORD:or and-expr)*
 
-and-expr    : comp-expr (KEYWORD:and comp-expr)*
+and-expr      : comp-expr (KEYWORD:and comp-expr)*
 
-comp-expr   : KEYWORD:not comp-expr
-            : bit-or-expr ((EE|NE|LT|GT|LTE|GTE) bit-or-expr)*
+comp-expr     : KEYWORD:not comp-expr
+              : bit-or-expr ((EE|NE|LT|GT|LTE|GTE) bit-or-expr)*
 
-bit-or-expr : bit-xor-expr (BITOR bit-xor-expr)*
+bit-or-expr   : bit-xor-expr (BITOR bit-xor-expr)*
 
 bit-xor-expr  : bit-and-expr (XOR bit-and-expr)*
 
 bit-and-expr  : shift-expr (BITAND shift-expr)*
 
-shift-expr  : arith-expr ((LSHIFT|RSHIFT) arith-expr)*
+shift-expr    : arith-expr ((LSHIFT|RSHIFT) arith-expr)*
 
-arith-expr  : term ((PLUS|MINUS) term)*
+arith-expr    : term ((PLUS|MINUS) term)*
 
-term        : factor ((MUL|DIV|INTDIV|MOD) factor)*
+term          : factor ((MUL|DIV|INTDIV|MOD) factor)*
 
-factor      : (PLUS|MINUS|BITNOT) factor
-            : power
+factor        : (PLUS|MINUS|BITNOT) factor
+              : power
 
-power       : call (POW factor)*
+power         : call (POW factor)*
 
-call        : atom ((LPAREN (expr (COMMA expr)*)? RPAREN)|(LSQUARE expr RSQUARE))*
+call          : atom ((LPAREN (expr (COMMA expr)*)? RPAREN)|(LSQUARE expr RSQUARE))*
 
-atom        : INT|FLOAT|BOOL|STRING|NONE|IDENTIFIER
-            : LPAREN expr RPAREN
-            : list-expr
-            : if-expr
-            : while-expr
-            : func-def
+atom          : INT|FLOAT|BOOL|STRING|NONE|IDENTIFIER
+              : LPAREN expr RPAREN
+              : list-expr
+              : if-expr
+              : while-expr
+              : func-def
 
-list-expr   : LSQUARE (expr (COMMA expr)*)? RSQUARE
+list-expr     : LSQUARE (expr (COMMA expr)*)? RSQUARE
 
-if-expr     : KEYWORD:if expr KEYWORD:then
-              (statement if-expr-b|if-expr-c?)
-            | (NEWLINE statements KEYWORD:end|if-expr-b|if-expr-c)
+if-expr       : KEYWORD:if expr KEYWORD:then
+                (statement if-expr-b|if-expr-c?)
+              | (NEWLINE statements KEYWORD:end|if-expr-b|if-expr-c)
 
-if-expr-b   : KEYWORD:elif expr KEYWORD:then
-              (statement if-expr-b|if-expr-c?)
-            | (NEWLINE statements KEYWORD:end|if-expr-b|if-expr-c)
+if-expr-b     : KEYWORD:elif expr KEYWORD:then
+                (statement if-expr-b|if-expr-c?)
+              | (NEWLINE statements KEYWORD:end|if-expr-b|if-expr-c)
 
-if-expr-c   : KEYWORD:else
-              statement
-            | (NEWLINE statements KEYWORD:end)
+if-expr-c     : KEYWORD:else
+                statement
+              | (NEWLINE statements KEYWORD:end)
 
-while-expr  : KEYWORD:while expr KEYWORD:then
-              statement
-            | (NEWLINE statements KEYWORD:end)
+while-expr    : KEYWORD:while expr KEYWORD:then
+                statement
+              | (NEWLINE statements KEYWORD:end)
 
-func-def    : KEYWORD:def IDENTIFIER?
-              LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
-              (ARROW expr)
-            | (NEWLINE statements KEYWORD:end)
+func-def      : KEYWORD:def IDENTIFIER?
+                LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
+                (ARROW expr)
+              | (NEWLINE statements KEYWORD:end)

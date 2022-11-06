@@ -24,9 +24,7 @@ public class _None extends _Value
 
     public _Value getComparisonEq(_Value other) throws Exception
     {
-        if (other.getClass() == _Bool.class)
-            return ((_Bool)other).getComparisonEq(this);
-        else if (other.getClass() == _BaseFunction.class)
+        if (other.getClass() == _BaseFunction.class)
             return super.getComparisonEq(other);
         else
             return new _Bool(Boolean.toString(other.type().equals("NoneType")));
@@ -34,9 +32,7 @@ public class _None extends _Value
 
     public _Value getComparisonNe(_Value other) throws Exception
     {
-        if (other.getClass() == _Bool.class)
-            return ((_Bool)other).getComparisonNe(this);
-        else if (other.getClass() == _BaseFunction.class)
+        if (other.getClass() == _BaseFunction.class)
             return super.getComparisonNe(other);
         else
             return new _Bool(Boolean.toString(!other.type().equals("NoneType")));

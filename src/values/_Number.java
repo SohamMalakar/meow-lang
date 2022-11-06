@@ -186,10 +186,6 @@ public class _Number extends _Value
                 return new _Bool(
                     Boolean.toString(Double.parseDouble(this.value()) == Double.parseDouble(other.value())));
         }
-        else if (other.getClass() == _Bool.class)
-        {
-            return ((_Bool)other).getComparisonEq(this);
-        }
         else if (other.getClass() == _BaseFunction.class)
         {
             return super.getComparisonEq(other);
@@ -207,10 +203,6 @@ public class _Number extends _Value
             else
                 return new _Bool(
                     Boolean.toString(Double.parseDouble(this.value()) != Double.parseDouble(other.value())));
-        }
-        else if (other.getClass() == _Bool.class)
-        {
-            return ((_Bool)other).getComparisonNe(this);
         }
         else if (other.getClass() == _BaseFunction.class)
         {
