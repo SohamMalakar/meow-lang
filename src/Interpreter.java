@@ -25,8 +25,8 @@ import src.nodes.UnaryOpNode;
 import src.nodes.VarAccessNode;
 import src.nodes.VarAssignNode;
 import src.nodes.WhileNode;
-import src.values._BaseFunction;
 import src.values._Bool;
+import src.values._BuiltInFunction;
 import src.values._Dict;
 import src.values._Function;
 import src.values._List;
@@ -95,7 +95,8 @@ public class Interpreter
             _Value key = res.register(visit(elementNode.key, context));
             _Value value = res.register(visit(elementNode.value, context));
 
-            if (key.getClass() == _BaseFunction.class || key.getClass() == _List.class || key.getClass() == _Dict.class)
+            if (key.getClass() == _Function.class || key.getClass() == _BuiltInFunction.class ||
+                key.getClass() == _List.class || key.getClass() == _Dict.class)
                 throw new Exception("TypeError: unhashable type: '" + key.type() + "'");
 
             elements.put(key, value);

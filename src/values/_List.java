@@ -84,10 +84,9 @@ public class _List extends _Value
 
     public _Value getComparisonEq(_Value other) throws Exception
     {
-        if (!this.type().equals(other.type()))
+        if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
             return super.getComparisonEq(other);
-
-        if (this.size() != ((_List)other).size())
+        else if (!this.type().equals(other.type()) || this.size() != ((_List)other).size())
             return new _Bool(Boolean.toString(false));
 
         for (int i = 0; i < this.size(); i++)
@@ -103,10 +102,9 @@ public class _List extends _Value
 
     public _Value getComparisonNe(_Value other) throws Exception
     {
-        if (!this.type().equals(other.type()))
+        if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
             return super.getComparisonNe(other);
-
-        if (this.size() != ((_List)other).size())
+        else if (!this.type().equals(other.type()) || this.size() != ((_List)other).size())
             return new _Bool(Boolean.toString(true));
 
         for (int i = 0; i < this.size(); i++)

@@ -205,7 +205,7 @@ public class _Number extends _Value
                 return new _Bool(
                     Boolean.toString(Double.parseDouble(this.value()) == Double.parseDouble(other.value())));
         }
-        else if (other.getClass() == _BaseFunction.class)
+        else if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
         {
             return super.getComparisonEq(other);
         }
@@ -223,7 +223,7 @@ public class _Number extends _Value
                 return new _Bool(
                     Boolean.toString(Double.parseDouble(this.value()) != Double.parseDouble(other.value())));
         }
-        else if (other.getClass() == _BaseFunction.class)
+        else if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
         {
             return super.getComparisonNe(other);
         }

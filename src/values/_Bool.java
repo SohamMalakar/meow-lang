@@ -53,7 +53,7 @@ public class _Bool extends _Value
     {
         if (other.getClass() == _Bool.class)
             return new _Bool(Boolean.toString(this.value().equals(other.value())));
-        else if (other.getClass() == _BaseFunction.class)
+        else if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
             return super.getComparisonEq(other);
 
         return new _Bool("false");
@@ -63,7 +63,7 @@ public class _Bool extends _Value
     {
         if (other.getClass() == _Bool.class)
             return new _Bool(Boolean.toString(!this.value().equals(other.value())));
-        else if (other.getClass() == _BaseFunction.class)
+        else if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
             return super.getComparisonNe(other);
 
         return new _Bool("true");
