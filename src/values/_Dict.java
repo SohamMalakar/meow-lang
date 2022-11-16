@@ -12,6 +12,16 @@ public class _Dict extends _Value
         dict = elements;
     }
 
+    public int size()
+    {
+        return dict.keySet().size();
+    }
+
+    public boolean containsKey(_Value other)
+    {
+        return dict.containsKey(other);
+    }
+
     public String rawValue() throws Exception
     {
         String str = "{";
@@ -45,5 +55,35 @@ public class _Dict extends _Value
             throw new Exception("KeyError: " + other.value());
 
         return dict.get(other);
+    }
+
+    public _Value getComparisonEq(_Value other) throws Exception
+    {
+        if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
+            return super.getComparisonEq(other);
+        else if (!this.type().equals(other.type()) || this.size() != ((_Dict)other).size())
+            return new _Bool("false");
+
+        for (var elem : dict.entrySet())
+            if (!((_Dict)other).containsKey(elem.getKey()) ||
+                !elem.getValue().getComparisonEq(((_Dict)other).get(elem.getKey())).isTrue())
+                return new _Bool("false");
+
+        return new _Bool("true");
+    }
+
+    public _Value getComparisonNe(_Value other) throws Exception
+    {
+        if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
+            return super.getComparisonNe(other);
+        else if (!this.type().equals(other.type()) || this.size() != ((_Dict)other).size())
+            return new _Bool("true");
+
+        for (var elem : dict.entrySet())
+            if (!((_Dict)other).containsKey(elem.getKey()) ||
+                !elem.getValue().getComparisonEq(((_Dict)other).get(elem.getKey())).isTrue())
+                return new _Bool("true");
+
+        return new _Bool("false");
     }
 }
