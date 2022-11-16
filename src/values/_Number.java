@@ -1,16 +1,35 @@
 package src.values;
 
+import java.util.Objects;
 import src.utils.Mathf;
 
 public class _Number extends _Value
 {
     private String type;
     private String value;
+    private int hashCode;
 
     public _Number(String type, String value)
     {
         this.type = type;
         this.value = value;
+        hashCode = Objects.hash(type, value);
+    }
+
+    public boolean equals(Object other)
+    {
+        if (this == other)
+            return true;
+        else if (other == null || getClass() != other.getClass())
+            return false;
+
+        _Number that = (_Number)other;
+        return type.equals(that.type) && value.equals(that.value);
+    }
+
+    public int hashCode()
+    {
+        return hashCode;
     }
 
     public String rawValue()

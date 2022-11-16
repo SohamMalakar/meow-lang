@@ -7,6 +7,7 @@ import src.nodes.BoolNode;
 import src.nodes.BreakNode;
 import src.nodes.CallNode;
 import src.nodes.ContinueNode;
+import src.nodes.DictNode;
 import src.nodes.FuncDefNode;
 import src.nodes.IfNode;
 import src.nodes.ListNode;
@@ -449,6 +450,10 @@ public class Parser
             {
                 return listExpr();
             }
+            else if (currentToken.type == TokenType.LBRACE)
+            {
+                return dictExpr();
+            }
             else if (currentToken.matches(TokenType.KEYWORD, "if"))
             {
                 return ifExpr();
@@ -496,6 +501,52 @@ public class Parser
         }
 
         return new ListNode(elementNodes);
+    }
+
+    private Node dictExpr() throws Exception
+    {
+        ArrayList<Pair<Node, Node>> dictNodes = new ArrayList<>();
+
+        if (currentToken == null || currentToken.type != TokenType.LBRACE)
+            throw new Exception("Expected '{'");
+
+        advance();
+
+        if (currentToken != null && currentToken.type == TokenType.RBRACE)
+        {
+            advance();
+        }
+        else
+        {
+            Node key = expr();
+
+            if (currentToken == null || currentToken.type != TokenType.COLON)
+                throw new Exception("Expected ':'");
+
+            advance();
+            Node value = expr();
+            dictNodes.add(new Pair<Node, Node>(key, value));
+
+            while (currentToken != null && currentToken.type == TokenType.COMMA)
+            {
+                advance();
+                key = expr();
+
+                if (currentToken == null || currentToken.type != TokenType.COLON)
+                    throw new Exception("Expected ':'");
+
+                advance();
+                value = expr();
+                dictNodes.add(new Pair<Node, Node>(key, value));
+            }
+
+            if (currentToken.type == null || currentToken.type != TokenType.RBRACE)
+                throw new Exception("Expected ',' or '}'");
+
+            advance();
+        }
+
+        return new DictNode(dictNodes);
     }
 
     private Node ifExpr() throws Exception

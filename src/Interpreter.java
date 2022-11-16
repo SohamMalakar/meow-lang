@@ -3,12 +3,15 @@ package src;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import src.nodes.AlternateAssignNode;
 import src.nodes.BinOpNode;
 import src.nodes.BoolNode;
 import src.nodes.BreakNode;
 import src.nodes.CallNode;
 import src.nodes.ContinueNode;
+import src.nodes.DictNode;
 import src.nodes.FuncDefNode;
 import src.nodes.IfNode;
 import src.nodes.ListNode;
@@ -22,7 +25,9 @@ import src.nodes.UnaryOpNode;
 import src.nodes.VarAccessNode;
 import src.nodes.VarAssignNode;
 import src.nodes.WhileNode;
+import src.values._BaseFunction;
 import src.values._Bool;
+import src.values._Dict;
 import src.values._Function;
 import src.values._List;
 import src.values._None;
@@ -78,6 +83,28 @@ public class Interpreter
         }
 
         return res.success(new _List(elements).setContext(context));
+    }
+
+    public RTResult visit(DictNode node, Context context) throws Exception
+    {
+        RTResult res = new RTResult();
+        Map<_Value, _Value> elements = new HashMap<>();
+
+        for (var elementNode : node.node)
+        {
+            _Value key = res.register(visit(elementNode.key, context));
+            _Value value = res.register(visit(elementNode.value, context));
+
+            if (key.getClass() == _BaseFunction.class || key.getClass() == _List.class || key.getClass() == _Dict.class)
+                throw new Exception("TypeError: unhashable type: '" + key.type() + "'");
+
+            elements.put(key, value);
+
+            if (res.shouldReturn())
+                return res;
+        }
+
+        return res.success(new _Dict(elements).setContext(context));
     }
 
     public RTResult visit(SubscriptableNode node, Context context) throws Exception

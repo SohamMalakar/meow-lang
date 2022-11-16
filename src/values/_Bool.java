@@ -1,12 +1,32 @@
 package src.values;
 
+import java.util.Objects;
+
 public class _Bool extends _Value
 {
     private String value;
+    private int hashCode;
 
     public _Bool(String value)
     {
         this.value = value;
+        hashCode = Objects.hash(type(), value);
+    }
+
+    public boolean equals(Object other)
+    {
+        if (this == other)
+            return true;
+        else if (other == null || getClass() != other.getClass())
+            return false;
+
+        _Bool that = (_Bool)other;
+        return value.equals(that.rawValue());
+    }
+
+    public int hashCode()
+    {
+        return hashCode;
     }
 
     public String rawValue()

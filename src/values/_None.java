@@ -1,7 +1,31 @@
 package src.values;
 
+import java.util.Objects;
+
 public class _None extends _Value
 {
+    private int hashCode;
+
+    public _None()
+    {
+        hashCode = Objects.hash("NoneType", "none");
+    }
+
+    public boolean equals(Object other)
+    {
+        if (this == other)
+            return true;
+        else if (other == null || getClass() != other.getClass())
+            return false;
+        else
+            return true;
+    }
+
+    public int hashCode()
+    {
+        return hashCode;
+    }
+
     public String rawValue() throws Exception
     {
         return "none";

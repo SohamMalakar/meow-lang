@@ -1,12 +1,32 @@
 package src.values;
 
+import java.util.Objects;
+
 public class _String extends _Value
 {
     private String value;
+    private int hashCode;
 
     public _String(String value)
     {
         this.value = value;
+        hashCode = Objects.hash(value);
+    }
+
+    public boolean equals(Object other)
+    {
+        if (this == other)
+            return true;
+        else if (other == null || getClass() != other.getClass())
+            return false;
+
+        _String that = (_String)other;
+        return value.equals(that.rawValue());
+    }
+
+    public int hashCode()
+    {
+        return hashCode;
     }
 
     public String value()
