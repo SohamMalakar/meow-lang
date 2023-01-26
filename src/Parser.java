@@ -15,6 +15,7 @@ import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
 import src.nodes.ReturnNode;
+import src.nodes.SliceNode;
 import src.nodes.StringNode;
 import src.nodes.SubscriptableNode;
 import src.nodes.UnaryOpNode;
@@ -382,13 +383,83 @@ public class Parser
             else if (currentToken.type == TokenType.LSQUARE)
             {
                 advance();
-                Node expr = expr();
 
-                if (currentToken == null || currentToken.type != TokenType.RSQUARE)
-                    throw new Exception("Expected ']'");
+                Node start = new NoneTypeNode();
+                Node end = new NoneTypeNode();
+                Node step = new NoneTypeNode();
 
-                atom = new SubscriptableNode(atom, expr);
-                advance();
+                int checkPointForStart = position;
+
+                try
+                {
+                    start = expr();
+                }
+                catch (Exception e)
+                {
+                    position = checkPointForStart;
+                    currentToken = position < tokens.size() ? tokens.get(position) : null;
+
+                    if (currentToken == null || currentToken.type != TokenType.COLON)
+                        throw new Exception("Expected ':' or an expression");
+                }
+
+                if (currentToken != null && currentToken.type == TokenType.RSQUARE)
+                {
+                    atom = new SubscriptableNode(atom, start);
+                    advance();
+                }
+                else if (currentToken != null && currentToken.type == TokenType.COLON)
+                {
+                    advance();
+
+                    int checkPointForEnd = position;
+
+                    try
+                    {
+                        end = expr();
+                    }
+                    catch (Exception e)
+                    {
+                        position = checkPointForEnd;
+                        currentToken = position < tokens.size() ? tokens.get(position) : null;
+                    }
+
+                    if (currentToken != null && currentToken.type == TokenType.RSQUARE)
+                    {
+                        atom = new SliceNode(atom, start, end, step);
+                        advance();
+                    }
+                    else if (currentToken != null && currentToken.type == TokenType.COLON)
+                    {
+                        advance();
+
+                        int checkPointForStep = position;
+
+                        try
+                        {
+                            step = expr();
+                        }
+                        catch (Exception e)
+                        {
+                            position = checkPointForStep;
+                            currentToken = position < tokens.size() ? tokens.get(position) : null;
+                        }
+
+                        if (currentToken == null || currentToken.type != TokenType.RSQUARE)
+                            throw new Exception("Expected ']'");
+
+                        atom = new SliceNode(atom, start, end, step);
+                        advance();
+                    }
+                    else
+                    {
+                        throw new Exception("Expected ':' or ']'");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Expected ':' or ']'");
+                }
             }
             else
             {

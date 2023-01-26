@@ -25,3 +25,4 @@ Multiline comments
 Return multiple values: maybe use lists
 Error definition
 # Dictionaries: maybe add a new value type
+# Slicing

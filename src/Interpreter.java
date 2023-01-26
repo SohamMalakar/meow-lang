@@ -19,6 +19,7 @@ import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
 import src.nodes.ReturnNode;
+import src.nodes.SliceNode;
 import src.nodes.StringNode;
 import src.nodes.SubscriptableNode;
 import src.nodes.UnaryOpNode;
@@ -113,6 +114,15 @@ public class Interpreter
         RTResult res = new RTResult();
         return res.success(res.register(visit(node.subscriptableNode, context))
                                .get(res.register(visit(node.node, context)))
+                               .setContext(context));
+    }
+
+    public RTResult visit(SliceNode node, Context context) throws Exception
+    {
+        RTResult res = new RTResult();
+        return res.success(res.register(visit(node.node, context))
+                               .get(res.register(visit(node.start, context)), res.register(visit(node.end, context)),
+                                    res.register(visit(node.step, context)))
                                .setContext(context));
     }
 

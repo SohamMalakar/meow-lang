@@ -1,6 +1,7 @@
 package src.values;
 
 import java.util.Objects;
+import src.utils.Mathf;
 
 public class _String extends _Value
 {
@@ -58,11 +59,90 @@ public class _String extends _Value
     {
         if (other.type().equals("int"))
         {
-            char charAt = value.charAt(Integer.parseInt(other.value()));
+            int index = Integer.parseInt(other.value());
+            index += index < 0 ? value.length() : 0;
+
+            if (index < 0 || index >= value.length())
+                throw new Exception("IndexError: string index out of range");
+
+            char charAt = value.charAt(index);
             return new _String(String.valueOf(charAt)).setContext(context);
         }
 
         return super.get(other);
+    }
+
+    public _Value get(_Value start, _Value end, _Value step) throws Exception
+    {
+        if ((!start.type().equals("NoneType") && !start.type().equals("int")) ||
+            (!end.type().equals("NoneType") && !end.type().equals("int")) ||
+            (!step.type().equals("NoneType") && !step.type().equals("int")))
+            return super.get(start, end, step);
+
+        if (step.type().equals("NoneType"))
+            step = new _Number("int", "1");
+
+        int start_val = 0;
+        int end_val = 0;
+        int step_val = Integer.parseInt(step.value());
+
+        if (step_val > 0)
+        {
+            if (start.type().equals("int"))
+                start_val = Mathf.clamp(Integer.parseInt(start.value()), -value.length(), value.length());
+            else
+                start_val = 0;
+
+            if (end.type().equals("int"))
+                end_val = Mathf.clamp(Integer.parseInt(end.value()), -value.length(), value.length());
+            else
+                end_val = value.length();
+        }
+        else if (step_val < 0)
+        {
+            if (start.type().equals("int"))
+                start_val = Mathf.clamp(Integer.parseInt(start.value()), ~value.length(), value.length() - 1);
+            else
+                start_val = -1;
+
+            if (end.type().equals("int"))
+                end_val = Mathf.clamp(Integer.parseInt(end.value()), ~value.length(), value.length() - 1);
+            else
+                end_val = ~value.length();
+        }
+        else
+        {
+            throw new Exception("ValueError: slice step cannot be zero");
+        }
+
+        start_val += start_val < 0 ? value.length() : 0;
+        end_val += end_val < 0 ? value.length() : 0;
+
+        if (step_val > 0)
+        {
+            if (start_val >= end_val)
+                return new _String("").copy().setContext(context);
+        }
+        else
+        {
+            if (start_val <= end_val)
+                return new _String("").copy().setContext(context);
+        }
+
+        String newStr = "";
+
+        if (step_val > 0)
+        {
+            for (int i = start_val; i < end_val; i += step_val)
+                newStr += value.charAt(i);
+        }
+        else
+        {
+            for (int i = start_val; i > end_val; i += step_val)
+                newStr += value.charAt(i);
+        }
+
+        return new _String(newStr).copy().setContext(context);
     }
 
     public _Value addedTo(_Value other) throws Exception

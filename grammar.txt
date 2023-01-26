@@ -32,7 +32,7 @@ factor        : (PLUS|MINUS|BITNOT) factor
 
 power         : call (POW factor)*
 
-call          : atom ((LPAREN (expr (COMMA expr)*)? RPAREN)|(LSQUARE expr RSQUARE))*
+call          : atom ((LPAREN (expr (COMMA expr)*)? RPAREN)|(LSQUARE expr|slice RSQUARE))*
 
 atom          : INT|FLOAT|BOOL|STRING|NONE|IDENTIFIER
               : LPAREN expr RPAREN
@@ -41,6 +41,11 @@ atom          : INT|FLOAT|BOOL|STRING|NONE|IDENTIFIER
               : if-expr
               : while-expr
               : func-def
+
+slice         : COLON | COLON COLON | expr COLON | COLON expr | expr COLON COLON 
+              | COLON expr COLON | COLON COLON expr | expr COLON expr COLON 
+              | expr COLON COLON expr | COLON expr COLON expr | expr COLON expr 
+              | expr COLON expr COLON expr
 
 list-expr     : LSQUARE (expr (COMMA expr)*)? RSQUARE
 
