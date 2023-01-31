@@ -47,9 +47,10 @@ public class Run
         if (result.size() == 1)
         {
             var index = new _Number("int", "0");
+            var res = result.get(index);
 
-            if (!result.get(index).type().equals("NoneType"))
-                System.out.println(result.get(index).value());
+            if (!res.type().equals("NoneType"))
+                System.out.println(res.value());
         }
         else
         {

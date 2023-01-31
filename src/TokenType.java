@@ -32,8 +32,10 @@ public enum TokenType
     RPAREN,
     LSQUARE,
     RSQUARE,
+    LBRACE,
+    RBRACE,
     COMMA,
     ARROW,
-    NEWLINE,
-    EOF
+    COLON,
+    NEWLINE
 }

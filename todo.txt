@@ -1,12 +1,13 @@
 Long
 # String
+File I/O
 Maybe modify string implementation approach: escape sequence
 Foreach
 Syntax
 Unit tests
 # Arithmetic
 # Comparison
-List comparison
+# List comparison
 # Logical
 # Bitwise
 Shorthand
@@ -21,5 +22,7 @@ Command line arguments
 # Comments
 Multiline comments
 # Should return parameter
+Return multiple values: maybe use lists
 Error definition
-Dictionaries: maybe add a new value type
+# Dictionaries: maybe add a new value type
+# Slicing

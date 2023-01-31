@@ -3,12 +3,15 @@ package src;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import src.nodes.AlternateAssignNode;
 import src.nodes.BinOpNode;
 import src.nodes.BoolNode;
 import src.nodes.BreakNode;
 import src.nodes.CallNode;
 import src.nodes.ContinueNode;
+import src.nodes.DictNode;
 import src.nodes.FuncDefNode;
 import src.nodes.IfNode;
 import src.nodes.ListNode;
@@ -16,6 +19,7 @@ import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
 import src.nodes.ReturnNode;
+import src.nodes.SliceNode;
 import src.nodes.StringNode;
 import src.nodes.SubscriptableNode;
 import src.nodes.UnaryOpNode;
@@ -23,6 +27,8 @@ import src.nodes.VarAccessNode;
 import src.nodes.VarAssignNode;
 import src.nodes.WhileNode;
 import src.values._Bool;
+import src.values._BuiltInFunction;
+import src.values._Dict;
 import src.values._Function;
 import src.values._List;
 import src.values._None;
@@ -80,11 +86,43 @@ public class Interpreter
         return res.success(new _List(elements).setContext(context));
     }
 
+    public RTResult visit(DictNode node, Context context) throws Exception
+    {
+        RTResult res = new RTResult();
+        Map<_Value, _Value> elements = new HashMap<>();
+
+        for (var elementNode : node.node)
+        {
+            _Value key = res.register(visit(elementNode.key, context));
+            _Value value = res.register(visit(elementNode.value, context));
+
+            if (key.getClass() == _Function.class || key.getClass() == _BuiltInFunction.class ||
+                key.getClass() == _List.class || key.getClass() == _Dict.class)
+                throw new Exception("TypeError: unhashable type: '" + key.type() + "'");
+
+            elements.put(key, value);
+
+            if (res.shouldReturn())
+                return res;
+        }
+
+        return res.success(new _Dict(elements).setContext(context));
+    }
+
     public RTResult visit(SubscriptableNode node, Context context) throws Exception
     {
         RTResult res = new RTResult();
         return res.success(res.register(visit(node.subscriptableNode, context))
                                .get(res.register(visit(node.node, context)))
+                               .setContext(context));
+    }
+
+    public RTResult visit(SliceNode node, Context context) throws Exception
+    {
+        RTResult res = new RTResult();
+        return res.success(res.register(visit(node.node, context))
+                               .get(res.register(visit(node.start, context)), res.register(visit(node.end, context)),
+                                    res.register(visit(node.step, context)))
                                .setContext(context));
     }
 

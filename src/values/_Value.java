@@ -44,6 +44,11 @@ public class _Value
         throw new Exception("No get method defined");
     }
 
+    public _Value get(_Value start, _Value end, _Value step) throws Exception
+    {
+        throw new Exception("No get method defined");
+    }
+
     public RTResult execute(ArrayList<_Value> args) throws Exception
     {
         throw new Exception("No execute method defined");

@@ -134,6 +134,16 @@ public class Lexer
                 tokens.add(new Token(TokenType.RSQUARE));
                 advance();
             }
+            else if (currentChar == '{')
+            {
+                tokens.add(new Token(TokenType.LBRACE));
+                advance();
+            }
+            else if (currentChar == '}')
+            {
+                tokens.add(new Token(TokenType.RBRACE));
+                advance();
+            }
             else if (currentChar == ',')
             {
                 tokens.add(new Token(TokenType.COMMA));
@@ -158,7 +168,7 @@ public class Lexer
         advance();
     }
 
-    private Token makeAssignment() throws Exception
+    private Token makeAssignment()
     {
         advance();
 
@@ -168,7 +178,7 @@ public class Lexer
             return new Token(TokenType.ASSIGN);
         }
 
-        throw new Exception("Illegal character: ':'");
+        return new Token(TokenType.COLON);
     }
 
     private Token makeMinusOrArrow()

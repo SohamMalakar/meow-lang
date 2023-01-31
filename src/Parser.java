@@ -7,6 +7,7 @@ import src.nodes.BoolNode;
 import src.nodes.BreakNode;
 import src.nodes.CallNode;
 import src.nodes.ContinueNode;
+import src.nodes.DictNode;
 import src.nodes.FuncDefNode;
 import src.nodes.IfNode;
 import src.nodes.ListNode;
@@ -14,6 +15,7 @@ import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
 import src.nodes.ReturnNode;
+import src.nodes.SliceNode;
 import src.nodes.StringNode;
 import src.nodes.SubscriptableNode;
 import src.nodes.UnaryOpNode;
@@ -50,7 +52,7 @@ public class Parser
     {
         Node ast = statements();
 
-        if (currentToken != null && currentToken.type != TokenType.EOF)
+        if (currentToken != null)
             throw new Exception("SyntaxError: expected a newline or EOF");
 
         return ast;
@@ -381,13 +383,83 @@ public class Parser
             else if (currentToken.type == TokenType.LSQUARE)
             {
                 advance();
-                Node expr = expr();
 
-                if (currentToken == null || currentToken.type != TokenType.RSQUARE)
-                    throw new Exception("Expected ']'");
+                Node start = new NoneTypeNode();
+                Node end = new NoneTypeNode();
+                Node step = new NoneTypeNode();
 
-                atom = new SubscriptableNode(atom, expr);
-                advance();
+                int checkPointForStart = position;
+
+                try
+                {
+                    start = expr();
+                }
+                catch (Exception e)
+                {
+                    position = checkPointForStart;
+                    currentToken = position < tokens.size() ? tokens.get(position) : null;
+
+                    if (currentToken == null || currentToken.type != TokenType.COLON)
+                        throw new Exception("Expected ':' or an expression");
+                }
+
+                if (currentToken != null && currentToken.type == TokenType.RSQUARE)
+                {
+                    atom = new SubscriptableNode(atom, start);
+                    advance();
+                }
+                else if (currentToken != null && currentToken.type == TokenType.COLON)
+                {
+                    advance();
+
+                    int checkPointForEnd = position;
+
+                    try
+                    {
+                        end = expr();
+                    }
+                    catch (Exception e)
+                    {
+                        position = checkPointForEnd;
+                        currentToken = position < tokens.size() ? tokens.get(position) : null;
+                    }
+
+                    if (currentToken != null && currentToken.type == TokenType.RSQUARE)
+                    {
+                        atom = new SliceNode(atom, start, end, step);
+                        advance();
+                    }
+                    else if (currentToken != null && currentToken.type == TokenType.COLON)
+                    {
+                        advance();
+
+                        int checkPointForStep = position;
+
+                        try
+                        {
+                            step = expr();
+                        }
+                        catch (Exception e)
+                        {
+                            position = checkPointForStep;
+                            currentToken = position < tokens.size() ? tokens.get(position) : null;
+                        }
+
+                        if (currentToken == null || currentToken.type != TokenType.RSQUARE)
+                            throw new Exception("Expected ']'");
+
+                        atom = new SliceNode(atom, start, end, step);
+                        advance();
+                    }
+                    else
+                    {
+                        throw new Exception("Expected ':' or ']'");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Expected ':' or ']'");
+                }
             }
             else
             {
@@ -449,6 +521,10 @@ public class Parser
             {
                 return listExpr();
             }
+            else if (currentToken.type == TokenType.LBRACE)
+            {
+                return dictExpr();
+            }
             else if (currentToken.matches(TokenType.KEYWORD, "if"))
             {
                 return ifExpr();
@@ -496,6 +572,52 @@ public class Parser
         }
 
         return new ListNode(elementNodes);
+    }
+
+    private Node dictExpr() throws Exception
+    {
+        ArrayList<Pair<Node, Node>> dictNodes = new ArrayList<>();
+
+        if (currentToken == null || currentToken.type != TokenType.LBRACE)
+            throw new Exception("Expected '{'");
+
+        advance();
+
+        if (currentToken != null && currentToken.type == TokenType.RBRACE)
+        {
+            advance();
+        }
+        else
+        {
+            Node key = expr();
+
+            if (currentToken == null || currentToken.type != TokenType.COLON)
+                throw new Exception("Expected ':'");
+
+            advance();
+            Node value = expr();
+            dictNodes.add(new Pair<Node, Node>(key, value));
+
+            while (currentToken != null && currentToken.type == TokenType.COMMA)
+            {
+                advance();
+                key = expr();
+
+                if (currentToken == null || currentToken.type != TokenType.COLON)
+                    throw new Exception("Expected ':'");
+
+                advance();
+                value = expr();
+                dictNodes.add(new Pair<Node, Node>(key, value));
+            }
+
+            if (currentToken.type == null || currentToken.type != TokenType.RBRACE)
+                throw new Exception("Expected ',' or '}'");
+
+            advance();
+        }
+
+        return new DictNode(dictNodes);
     }
 
     private Node ifExpr() throws Exception

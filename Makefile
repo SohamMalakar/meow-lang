@@ -8,7 +8,7 @@ run: meow
 	cd ./target/classes && clear && java src.Shell
 
 build: meow
-	jar cf ./target/meow.jar -C ./target/classes .
+	jar cfe ./target/meow.jar src.Shell -C ./target/classes .
 
 clean:
 	rm -rf target

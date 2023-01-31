@@ -1,16 +1,35 @@
 package src.values;
 
+import java.util.Objects;
 import src.utils.Mathf;
 
 public class _Number extends _Value
 {
     private String type;
     private String value;
+    private int hashCode;
 
     public _Number(String type, String value)
     {
         this.type = type;
         this.value = value;
+        hashCode = Objects.hash(type, value);
+    }
+
+    public boolean equals(Object other)
+    {
+        if (this == other)
+            return true;
+        else if (other == null || getClass() != other.getClass())
+            return false;
+
+        _Number that = (_Number)other;
+        return type.equals(that.type) && value.equals(that.value);
+    }
+
+    public int hashCode()
+    {
+        return hashCode;
     }
 
     public String rawValue()
@@ -186,11 +205,7 @@ public class _Number extends _Value
                 return new _Bool(
                     Boolean.toString(Double.parseDouble(this.value()) == Double.parseDouble(other.value())));
         }
-        else if (other.getClass() == _Bool.class)
-        {
-            return ((_Bool)other).getComparisonEq(this);
-        }
-        else if (other.getClass() == _BaseFunction.class)
+        else if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
         {
             return super.getComparisonEq(other);
         }
@@ -208,11 +223,7 @@ public class _Number extends _Value
                 return new _Bool(
                     Boolean.toString(Double.parseDouble(this.value()) != Double.parseDouble(other.value())));
         }
-        else if (other.getClass() == _Bool.class)
-        {
-            return ((_Bool)other).getComparisonNe(this);
-        }
-        else if (other.getClass() == _BaseFunction.class)
+        else if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
         {
             return super.getComparisonNe(other);
         }
