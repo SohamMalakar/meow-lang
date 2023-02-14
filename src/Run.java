@@ -5,6 +5,7 @@ import src.nodes.Node;
 import src.values._BuiltInFunction;
 import src.values._List;
 import src.values._Number;
+import src.values._String;
 import src.values._Value;
 
 public class Run
@@ -16,6 +17,14 @@ public class Run
         symbolTable.set("print", new _BuiltInFunction("print"));
         symbolTable.set("str", new _BuiltInFunction("str"));
         symbolTable.set("run", new _BuiltInFunction("run"));
+
+        // command line arguments
+        ArrayList<_Value> argv = new ArrayList<_Value>();
+
+        for (var arg : Arguments.values)
+            argv.add(new _String(arg));
+
+        symbolTable.set("args", new _List(argv));
     }
 
     public static void run(String text, boolean noEcho) throws Exception
