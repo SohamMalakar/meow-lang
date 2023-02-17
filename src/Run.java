@@ -15,6 +15,11 @@ public class Run
     static
     {
         symbolTable.set("print", new _BuiltInFunction("print"));
+        symbolTable.set("input", new _BuiltInFunction("input"));
+        symbolTable.set("len", new _BuiltInFunction("len"));
+        symbolTable.set("int", new _BuiltInFunction("int"));
+        symbolTable.set("float", new _BuiltInFunction("float"));
+        symbolTable.set("bool", new _BuiltInFunction("bool"));
         symbolTable.set("str", new _BuiltInFunction("str"));
         symbolTable.set("run", new _BuiltInFunction("run"));
 

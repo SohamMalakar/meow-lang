@@ -24,6 +24,11 @@ public class _Value
         throw new Exception("No value method defined");
     }
 
+    public int size() throws Exception
+    {
+        throw new Exception("No size method defined");
+    }
+
     public String type() throws Exception
     {
         throw new Exception("No type method defined");

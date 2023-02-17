@@ -14,6 +14,11 @@ public class _String extends _Value
         hashCode = Objects.hash(value);
     }
 
+    public int size()
+    {
+        return value.length();
+    }
+
     public boolean equals(Object other)
     {
         if (this == other)

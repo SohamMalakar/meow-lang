@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
+import src.utils.Input;
 
 class Shell
 {
@@ -45,36 +45,33 @@ class Shell
             return;
         }
 
-        try (Scanner scanner = new Scanner(System.in))
+        while (true)
         {
+            System.out.print("🐈 >>> ");
+            String text = "";
+
             while (true)
             {
-                System.out.print("🐈 >>> ");
-                String text = "";
+                String word = Input.nextLine();
+                word = word.replaceAll("#.*", "");
+                text += word;
 
-                while (true)
-                {
-                    String word = scanner.nextLine();
-                    word = word.replaceAll("#.*", "");
-                    text += word;
+                if (!word.endsWith(";"))
+                    break;
+            }
 
-                    if (!word.endsWith(";"))
-                        break;
-                }
+            text = text.replaceAll(";", "\n").trim();
 
-                text = text.replaceAll(";", "\n").trim();
+            if (text.isEmpty())
+                continue;
 
-                if (text.isEmpty())
-                    continue;
-
-                try
-                {
-                    Run.run(text, false);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace(System.err);
-                }
+            try
+            {
+                Run.run(text, false);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace(System.err);
             }
         }
     }

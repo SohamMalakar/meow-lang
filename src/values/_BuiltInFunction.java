@@ -9,6 +9,7 @@ import java.util.Arrays;
 import src.Context;
 import src.RTResult;
 import src.Run;
+import src.utils.Input;
 
 public class _BuiltInFunction extends _BaseFunction
 {
@@ -67,6 +68,17 @@ public class _BuiltInFunction extends _BaseFunction
         return new RTResult().success(new _None());
     }
 
+    public ArrayList<String> param_input()
+    {
+        return new ArrayList<String>();
+    }
+
+    public RTResult execute_input(Context execCtx) throws Exception
+    {
+        String str = Input.nextLine();
+        return new RTResult().success(new _String(str));
+    }
+
     public ArrayList<String> param_str()
     {
         return new ArrayList<String>(Arrays.asList("value"));
@@ -76,6 +88,50 @@ public class _BuiltInFunction extends _BaseFunction
     {
         var value = execCtx.symbolTable.get("value");
         return new RTResult().success(new _String(value.rawValue()));
+    }
+
+    public ArrayList<String> param_len()
+    {
+        return new ArrayList<String>(Arrays.asList("list"));
+    }
+
+    public RTResult execute_len(Context execCtx) throws Exception
+    {
+        var value = execCtx.symbolTable.get("list");
+        return new RTResult().success(new _Number("int", String.valueOf(value.size())));
+    }
+
+    public ArrayList<String> param_int()
+    {
+        return new ArrayList<String>(Arrays.asList("value"));
+    }
+
+    public RTResult execute_int(Context execCtx) throws Exception
+    {
+        var value = execCtx.symbolTable.get("value");
+        return new RTResult().success(new _Number("int", String.valueOf(Integer.parseInt(value.rawValue()))));
+    }
+
+    public ArrayList<String> param_float()
+    {
+        return new ArrayList<String>(Arrays.asList("value"));
+    }
+
+    public RTResult execute_float(Context execCtx) throws Exception
+    {
+        var value = execCtx.symbolTable.get("value");
+        return new RTResult().success(new _Number("float", String.valueOf(Double.parseDouble(value.rawValue()))));
+    }
+
+    public ArrayList<String> param_bool()
+    {
+        return new ArrayList<String>(Arrays.asList("value"));
+    }
+
+    public RTResult execute_bool(Context execCtx) throws Exception
+    {
+        var value = execCtx.symbolTable.get("value");
+        return new RTResult().success(new _Bool(String.valueOf(value.isTrue())));
     }
 
     public ArrayList<String> param_run()

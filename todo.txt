@@ -13,7 +13,7 @@ Unit tests
 Shorthand
 List mutability
 # Built-in functions
-More functions: input, len, append, etc.
+# More functions: input, len, append, etc.
 Minus operator with 'str'
 Implicit string conversion while concatenating
 # Command line arguments
