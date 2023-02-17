@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import src.Context;
 import src.RTResult;
 import src.Run;
@@ -35,12 +35,13 @@ public class _BuiltInFunction extends _BaseFunction
         Context executeCtx = generateNewContext();
 
         String methodName = "execute_" + name;
-        ArrayList<String> argNames = new ArrayList<String>();
 
         Method method = getClass().getDeclaredMethod(methodName, executeCtx.getClass());
 
-        for (Parameter arg : method.getParameters())
-            argNames.add(arg.getName());
+        String paramMethod = "param_" + name;
+        Method param = getClass().getDeclaredMethod(paramMethod);
+
+        @SuppressWarnings("unchecked") ArrayList<String> argNames = (ArrayList<String>)param.invoke(this);
 
         res.register(checkAndPopulateArgs(argNames, args, executeCtx));
 
@@ -54,22 +55,37 @@ public class _BuiltInFunction extends _BaseFunction
         return res.success(returnValue);
     }
 
+    public ArrayList<String> param_print()
+    {
+        return new ArrayList<String>(Arrays.asList("value"));
+    }
+
     public RTResult execute_print(Context execCtx) throws Exception
     {
-        var value = execCtx.symbolTable.get("arg0");
+        var value = execCtx.symbolTable.get("value");
         System.out.print(value.rawValue());
         return new RTResult().success(new _None());
     }
 
+    public ArrayList<String> param_str()
+    {
+        return new ArrayList<String>(Arrays.asList("value"));
+    }
+
     public RTResult execute_str(Context execCtx) throws Exception
     {
-        var value = execCtx.symbolTable.get("arg0");
+        var value = execCtx.symbolTable.get("value");
         return new RTResult().success(new _String(value.rawValue()));
+    }
+
+    public ArrayList<String> param_run()
+    {
+        return new ArrayList<String>(Arrays.asList("fn"));
     }
 
     public RTResult execute_run(Context execCtx) throws Exception
     {
-        var fn = execCtx.symbolTable.get("arg0");
+        var fn = execCtx.symbolTable.get("fn");
 
         if (fn.getClass() != _String.class)
             throw new Exception("Argument must be string");
