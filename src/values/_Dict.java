@@ -61,12 +61,12 @@ public class _Dict extends _Value
     {
         if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
             return super.getComparisonEq(other);
-        else if (!this.type().equals(other.type()) || this.size() != ((_Dict)other).size())
+        else if (!this.type().equals(other.type()) || this.size() != other.size())
             return new _Bool("false");
 
         for (var elem : dict.entrySet())
             if (!((_Dict)other).containsKey(elem.getKey()) ||
-                !elem.getValue().getComparisonEq(((_Dict)other).get(elem.getKey())).isTrue())
+                !elem.getValue().getComparisonEq(other.get(elem.getKey())).isTrue())
                 return new _Bool("false");
 
         return new _Bool("true");
@@ -76,12 +76,12 @@ public class _Dict extends _Value
     {
         if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
             return super.getComparisonNe(other);
-        else if (!this.type().equals(other.type()) || this.size() != ((_Dict)other).size())
+        else if (!this.type().equals(other.type()) || this.size() != other.size())
             return new _Bool("true");
 
         for (var elem : dict.entrySet())
             if (!((_Dict)other).containsKey(elem.getKey()) ||
-                !elem.getValue().getComparisonEq(((_Dict)other).get(elem.getKey())).isTrue())
+                !elem.getValue().getComparisonEq(other.get(elem.getKey())).isTrue())
                 return new _Bool("true");
 
         return new _Bool("false");
