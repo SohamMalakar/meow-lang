@@ -68,7 +68,8 @@ public class Run
         }
         else
         {
-            System.out.println(result.value());
+            for (int i = 0; i < result.size(); i++)
+                System.out.println(result.get(new _Number("int", String.valueOf(i))).value());
         }
     }
 }

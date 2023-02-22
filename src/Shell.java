@@ -47,20 +47,22 @@ class Shell
 
         while (true)
         {
-            System.out.print("🐈 >>> ");
+            System.out.print(">>> ");
             String text = "";
 
             while (true)
             {
                 String word = Input.nextLine();
-                word = word.replaceAll("#.*", "");
+                // word = word.replaceAll("#.*", "");
                 text += word;
 
                 if (!word.endsWith(";"))
                     break;
+
+                System.out.print("... ");
             }
 
-            text = text.replaceAll(";", "\n").trim();
+            // text = text.trim();
 
             if (text.isEmpty())
                 continue;
