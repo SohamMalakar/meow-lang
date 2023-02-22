@@ -65,8 +65,19 @@ public class Parser
         while (currentToken != null && currentToken.type == TokenType.NEWLINE)
             advance();
 
-        Node statement = statement();
-        statements.add(statement);
+        Node statement;
+        int checkPoint = position;
+
+        try
+        {
+            statement = statement();
+            statements.add(statement);
+        }
+        catch (Exception e)
+        {
+            position = checkPoint;
+            currentToken = position < tokens.size() ? tokens.get(position) : null;
+        }
 
         int newlineCount;
         boolean moreStatements = true;
@@ -87,7 +98,7 @@ public class Parser
             if (!moreStatements)
                 break;
 
-            int checkPoint = position; // i know it's spaghetti, so don't worry
+            checkPoint = position; // i know it's spaghetti, so don't worry
 
             try
             {

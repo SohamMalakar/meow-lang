@@ -1,4 +1,4 @@
-statements    : NEWLINE* statement (NEWLINE+ statement)* NEWLINE*
+statements    : NEWLINE* statement{0-1} (NEWLINE+ statement)* NEWLINE*
 
 statement     : KEYWORD:return expr?
               : KEYWORD:break
