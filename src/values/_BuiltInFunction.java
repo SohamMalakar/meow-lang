@@ -114,6 +114,41 @@ public class _BuiltInFunction extends _BaseFunction
         return new RTResult().success(new _String(value.rawValue()));
     }
 
+    public ArrayList<String> param_chr(ArrayList<_Value> args)
+    {
+        return new ArrayList<String>(Arrays.asList("value"));
+    }
+
+    public RTResult execute_chr(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        var value = execCtx.symbolTable.get("value");
+
+        if (!value.type().equals("int"))
+            throw new Exception("chr takes first argument as int");
+
+        Character temp = (char)Integer.parseInt(value.value());
+        return new RTResult().success(new _String(temp.toString()));
+    }
+
+    public ArrayList<String> param_ord(ArrayList<_Value> args)
+    {
+        return new ArrayList<String>(Arrays.asList("value"));
+    }
+
+    public RTResult execute_ord(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("value");
+
+        if (!value.type().equals("str"))
+            throw new Exception("TypeError: ord() expected string of length 1, but " + value.type() + " found");
+
+        if (value.size() != 1)
+            throw new Exception("TypeError: ord() expected a character, but string of length " + value.size() +
+                                " found");
+
+        return new RTResult().success(new _Number("int", String.valueOf((int)value.rawValue().charAt(0))));
+    }
+
     public ArrayList<String> param_len(ArrayList<_Value> args)
     {
         return new ArrayList<String>(Arrays.asList("list"));
@@ -205,6 +240,33 @@ public class _BuiltInFunction extends _BaseFunction
         bufferedReader.close();
 
         Run.run(buffer.toString(), true);
+        return new RTResult().success(new _None());
+    }
+
+    /* public ArrayList<String> param_sys(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("value"));
+    }
+
+    public RTResult execute_sys(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        // TODO: implement this
+        return new RTResult().success(new _None());
+    } */
+
+    public ArrayList<String> param_exit(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("value"));
+    }
+
+    public RTResult execute_exit(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("value");
+
+        if (!value.type().equals("int"))
+            throw new Exception("exit takes first argument as int");
+
+        System.exit(Integer.parseInt(value.value()));
         return new RTResult().success(new _None());
     }
 }

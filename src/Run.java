@@ -21,8 +21,12 @@ public class Run
         symbolTable.set("float", new _BuiltInFunction("float"));
         symbolTable.set("bool", new _BuiltInFunction("bool"));
         symbolTable.set("str", new _BuiltInFunction("str"));
+        symbolTable.set("chr", new _BuiltInFunction("chr"));
+        symbolTable.set("ord", new _BuiltInFunction("ord"));
         symbolTable.set("update", new _BuiltInFunction("update"));
         symbolTable.set("run", new _BuiltInFunction("run"));
+        // symbolTable.set("sys", new _BuiltInFunction("sys"));
+        symbolTable.set("exit", new _BuiltInFunction("exit"));
 
         // command line arguments
         ArrayList<_Value> argv = new ArrayList<_Value>();
