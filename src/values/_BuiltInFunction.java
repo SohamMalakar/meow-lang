@@ -213,6 +213,407 @@ public class _BuiltInFunction extends _BaseFunction
         return new RTResult().success(value.update(val0, val1));
     }
 
+    public ArrayList<String> param_fopen(ArrayList<_Value> args) throws Exception
+    {
+        ArrayList<String> params;
+
+        if (args.size() == 1)
+            params = new ArrayList<>(Arrays.asList("filename"));
+        else if (args.size() == 2)
+            params = new ArrayList<>(Arrays.asList("filename", "mode"));
+        else if (args.size() == 3)
+            params = new ArrayList<>(Arrays.asList("filename", "mode", "buffering"));
+        else if (args.size() == 4)
+            params = new ArrayList<>(Arrays.asList("filename", "mode", "buffering", "encoding"));
+        else
+            throw new Exception("fopen expected 1 to 4 arguments, got " + args.size());
+
+        return params;
+    }
+
+    public RTResult execute_fopen(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        String filename;
+        _Value value = execCtx.symbolTable.get("filename");
+
+        if (!value.type().equals("str"))
+            throw new Exception("fopen takes first argument as str");
+
+        filename = value.rawValue();
+
+        String mode = "r";
+
+        if (args.size() > 1)
+        {
+            value = execCtx.symbolTable.get("mode");
+
+            if (!value.type().equals("str"))
+                throw new Exception("fopen takes second argument as str");
+
+            mode = value.rawValue();
+        }
+
+        int buffering = 4096;
+
+        if (args.size() > 2)
+        {
+            value = execCtx.symbolTable.get("buffering");
+
+            if (!value.type().equals("int"))
+                throw new Exception("fopen takes third argument as int");
+
+            buffering = Integer.parseInt(value.value());
+        }
+
+        String encoding = "utf-8";
+
+        if (args.size() > 3)
+        {
+            value = execCtx.symbolTable.get("encoding");
+
+            if (!value.type().equals("str"))
+                throw new Exception("fopen takes fourth argument as str");
+
+            encoding = value.rawValue();
+        }
+
+        _File file = new _File(filename, mode, buffering, encoding);
+
+        if (file.getRandomAccessFile() == null)
+            return new RTResult().success(new _None());
+
+        return new RTResult().success(file);
+    }
+
+    public ArrayList<String> param_fread(ArrayList<_Value> args) throws Exception
+    {
+        ArrayList<String> params = new ArrayList<String>();
+
+        if (args.size() < 1 || args.size() > 2)
+            throw new Exception("fread expected either 1 or 2 arguments, got " + args.size());
+        else if (args.size() == 1)
+            params = new ArrayList<>(Arrays.asList("file"));
+        else
+            params = new ArrayList<>(Arrays.asList("file", "size"));
+
+        return params;
+    }
+
+    public RTResult execute_fread(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _File file;
+        _Value value;
+
+        value = execCtx.symbolTable.get("file");
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("fread takes first argument as file");
+
+        long bufferSize = file.size() - file.getPointer();
+
+        if (args.size() == 2)
+        {
+            value = execCtx.symbolTable.get("size");
+
+            if (!value.type().equals("int"))
+                throw new Exception("fread takes second argument as int");
+
+            bufferSize = Integer.parseInt(value.value());
+        }
+
+        byte[] buffer = new byte[(int)bufferSize];
+        file.read(buffer);
+
+        return new RTResult().success(new _String(new String(buffer)));
+    }
+
+    public ArrayList<String> param_freadline(ArrayList<_Value> args) throws Exception
+    {
+        return new ArrayList<String>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_freadline(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("freadline takes first argument as file");
+
+        return new RTResult().success(new _String(file.readline()));
+    }
+
+    public ArrayList<String> param_freadlines(ArrayList<_Value> args) throws Exception
+    {
+        return new ArrayList<String>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_freadlines(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("freadlines takes first argument as file");
+
+        return new RTResult().success(new _List(file.readlines()));
+    }
+
+    public ArrayList<String> param_fwrite(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file", "buffer"));
+    }
+
+    public RTResult execute_fwrite(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _File file;
+        _Value value;
+
+        value = execCtx.symbolTable.get("file");
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("fwrite takes first argument as file");
+
+        value = execCtx.symbolTable.get("buffer");
+
+        String buffer;
+
+        if (value.type().equals("str"))
+            buffer = value.rawValue();
+        else
+            throw new Exception("fwrite takes second argument as str");
+
+        file.write(buffer.getBytes());
+        return new RTResult().success(new _Number("int", String.valueOf(buffer.length())));
+    }
+
+    public ArrayList<String> param_fwritelines(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file", "list"));
+    }
+
+    public RTResult execute_fwritelines(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+        _List list;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("fwritelines takes first argument as file");
+
+        value = execCtx.symbolTable.get("list");
+
+        if (value.type().equals("list"))
+            list = (_List)value;
+        else
+            throw new Exception("fwritelines takes second argument as list");
+
+        file.writelines(list);
+        return new RTResult().success(new _None());
+    }
+
+    public ArrayList<String> param_fseek(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file", "offset", "position"));
+    }
+
+    public RTResult execute_fseek(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value;
+        _File file;
+        int offset;
+        int position;
+
+        value = execCtx.symbolTable.get("file");
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("fseek takes first argument as file");
+
+        value = execCtx.symbolTable.get("offset");
+
+        if (value.type().equals("int"))
+            offset = Integer.parseInt(value.value());
+        else
+            throw new Exception("fseek takes second argument as int");
+
+        value = execCtx.symbolTable.get("position");
+
+        if (value.type().equals("int"))
+            position = Integer.parseInt(value.value());
+        else
+            throw new Exception("fseek takes third argument as int");
+
+        long pointer = file.seek(offset, position);
+        return new RTResult().success(new _Number("int", String.valueOf(pointer)));
+    }
+
+    public ArrayList<String> param_ftell(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_ftell(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("ftell takes first argument as file");
+
+        return new RTResult().success(new _Number("int", String.valueOf(file.seek(0, 1))));
+    }
+
+    public ArrayList<String> param_flen(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_flen(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("flen takes first argument as file");
+
+        return new RTResult().success(new _Number("int", String.valueOf(file.size())));
+    }
+
+    public ArrayList<String> param_frewind(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_frewind(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("frewind takes first argument as file");
+
+        return new RTResult().success(new _Number("int", String.valueOf(file.seek(0, 0))));
+    }
+
+    public ArrayList<String> param_feof(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_feof(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("feof takes first argument as file");
+
+        return new RTResult().success(new _Bool(String.valueOf(file.getPointer() == file.size())));
+    }
+
+    public ArrayList<String> param_freadable(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_freadable(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("freadable takes first argument as file");
+
+        return new RTResult().success(new _Bool(String.valueOf(file.isReadable())));
+    }
+
+    public ArrayList<String> param_fwritable(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_fwritable(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+        _File file;
+
+        if (value.type().equals("file"))
+            file = (_File)value;
+        else
+            throw new Exception("fwritable takes first argument as file");
+
+        return new RTResult().success(new _Bool(String.valueOf(file.isWritable())));
+    }
+
+    public ArrayList<String> param_fflush(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_fflush(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+
+        if (!value.type().equals("file"))
+            throw new Exception("fflush takes first argument as file");
+
+        ((_File)value).flush();
+        return new RTResult().success(new _None());
+    }
+
+    public ArrayList<String> param_fclosed(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_fclosed(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+
+        if (!value.type().equals("file"))
+            throw new Exception("fclosed takes first argument as file");
+
+        return new RTResult().success(new _Bool(String.valueOf(((_File)value).isClosed())));
+    }
+
+    public ArrayList<String> param_fclose(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("file"));
+    }
+
+    public RTResult execute_fclose(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("file");
+
+        if (!value.type().equals("file"))
+            throw new Exception("fclose takes first argument as file");
+
+        ((_File)value).close();
+        return new RTResult().success(new _None());
+    }
+
     public ArrayList<String> param_run(ArrayList<_Value> args)
     {
         return new ArrayList<String>(Arrays.asList("fn"));
