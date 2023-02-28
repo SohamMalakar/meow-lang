@@ -3,6 +3,7 @@ statements    : NEWLINE* statement{0-1} (NEWLINE+ statement)* NEWLINE*
 statement     : KEYWORD:return expr?
               : KEYWORD:break
               : KEYWORD:continue
+              : KEYWORD:pass
               : expr
 
 expr          : IDENTIFIER EQ|ASSIGN expr

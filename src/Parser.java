@@ -14,6 +14,7 @@ import src.nodes.ListNode;
 import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
+import src.nodes.PassNode;
 import src.nodes.ReturnNode;
 import src.nodes.SliceNode;
 import src.nodes.StringNode;
@@ -151,6 +152,11 @@ public class Parser
             {
                 advance();
                 return new ContinueNode();
+            }
+            else if (currentToken.matches(TokenType.KEYWORD, "pass"))
+            {
+                advance();
+                return new PassNode();
             }
         }
 

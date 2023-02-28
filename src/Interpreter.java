@@ -18,6 +18,7 @@ import src.nodes.ListNode;
 import src.nodes.Node;
 import src.nodes.NoneTypeNode;
 import src.nodes.NumberNode;
+import src.nodes.PassNode;
 import src.nodes.ReturnNode;
 import src.nodes.SliceNode;
 import src.nodes.StringNode;
@@ -74,6 +75,11 @@ public class Interpreter
     {
         RTResult res = new RTResult();
         ArrayList<_Value> elements = new ArrayList<>();
+
+        // remove all the pass nodes from the list
+        for (int i = 0; i < node.elementNodes.size(); i++)
+            if (node.elementNodes.get(i).getClass() == PassNode.class)
+                node.elementNodes.remove(i--);
 
         for (Node elementNode : node.elementNodes)
         {
@@ -281,9 +287,12 @@ public class Interpreter
         RTResult res = new RTResult();
         ArrayList<_Value> elements = new ArrayList<>();
 
+        _Value condition;
+        _Value value;
+
         while (true)
         {
-            _Value condition = res.register(visit(node.condition, context));
+            condition = res.register(visit(node.condition, context));
 
             if (res.shouldReturn())
                 return res;
@@ -291,7 +300,7 @@ public class Interpreter
             if (!condition.isTrue())
                 break;
 
-            _Value value = res.register(visit(node.body, context));
+            value = res.register(visit(node.body, context));
 
             if (res.shouldReturn() && !res.loopShouldContinue && !res.loopShouldBreak)
                 return res;
@@ -385,5 +394,10 @@ public class Interpreter
     public RTResult visit(ContinueNode node, Context context)
     {
         return new RTResult().successContinue();
+    }
+
+    public RTResult visit(PassNode node, Context context)
+    {
+        return new RTResult().successPass();
     }
 }

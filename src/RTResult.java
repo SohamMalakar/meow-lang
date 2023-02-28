@@ -62,4 +62,10 @@ public class RTResult
     {
         return functionReturnValue != null ? true : (loopShouldBreak || loopShouldContinue);
     }
+
+    public RTResult successPass()
+    {
+        reset();
+        return this;
+    }
 }

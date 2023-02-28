@@ -18,6 +18,7 @@ public class Keywords
         values.add("return");
         values.add("break");
         values.add("continue");
+        values.add("pass");
         values.add("and");
         values.add("or");
         values.add("not");
