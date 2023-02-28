@@ -21,6 +21,7 @@ public class Run
         symbolTable.set("float", new _BuiltInFunction("float"));
         symbolTable.set("bool", new _BuiltInFunction("bool"));
         symbolTable.set("str", new _BuiltInFunction("str"));
+        symbolTable.set("update", new _BuiltInFunction("update"));
         symbolTable.set("run", new _BuiltInFunction("run"));
 
         // command line arguments

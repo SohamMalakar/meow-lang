@@ -142,6 +142,17 @@ public class _List extends _Value
         return new _List(newElements).copy().setContext(context);
     }
 
+    public _Value update(_Value index, _Value newVal) throws Exception
+    {
+        if (!index.type().equals("int"))
+            throw new Exception("update function for list takes second argument as int");
+
+        int i = Integer.parseInt(index.value());
+        elements.set(i, newVal);
+
+        return this;
+    }
+
     public _List addedTo(_Value other) throws Exception
     {
         if (other.getClass() != _List.class)

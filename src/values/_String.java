@@ -150,6 +150,20 @@ public class _String extends _Value
         return new _String(newStr).copy().setContext(context);
     }
 
+    public _Value update(_Value index, _Value newVal) throws Exception
+    {
+        if (!index.type().equals("int"))
+            throw new Exception("update function for str takes second argument as int");
+
+        if (!newVal.type().equals("str"))
+            throw new Exception("update function for str takes third argument as str");
+
+        int i = Integer.parseInt(index.value());
+        value = value.substring(0, i) + newVal.rawValue() + value.substring(i + 1);
+
+        return this;
+    }
+
     public _Value addedTo(_Value other) throws Exception
     {
         if (other.getClass() != _String.class)

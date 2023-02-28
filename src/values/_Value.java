@@ -54,6 +54,11 @@ public class _Value
         throw new Exception("No get method defined");
     }
 
+    public _Value update(_Value curVal, _Value newVal) throws Exception
+    {
+        throw new Exception("No update method defined");
+    }
+
     public RTResult execute(ArrayList<_Value> args) throws Exception
     {
         throw new Exception("No execute method defined");

@@ -158,6 +158,26 @@ public class _BuiltInFunction extends _BaseFunction
         return new RTResult().success(new _Bool(String.valueOf(value.isTrue())));
     }
 
+    // for testing purpose only
+    public ArrayList<String> param_update(ArrayList<_Value> args)
+    {
+        return new ArrayList<>(Arrays.asList("collection", "val0", "val1"));
+    }
+
+    // for testing purpose only
+    public RTResult execute_update(Context execCtx, ArrayList<_Value> args) throws Exception
+    {
+        _Value value = execCtx.symbolTable.get("collection");
+
+        if (!value.type().equals("dict") && !value.type().equals("list") && !value.type().equals("str"))
+            throw new Exception("update takes first argument as dict, list or str");
+
+        _Value val0 = execCtx.symbolTable.get("val0");
+        _Value val1 = execCtx.symbolTable.get("val1");
+
+        return new RTResult().success(value.update(val0, val1));
+    }
+
     public ArrayList<String> param_run(ArrayList<_Value> args)
     {
         return new ArrayList<String>(Arrays.asList("fn"));

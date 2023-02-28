@@ -57,6 +57,12 @@ public class _Dict extends _Value
         return dict.get(other);
     }
 
+    public _Value update(_Value key, _Value newVal) throws Exception
+    {
+        dict.put(key, newVal);
+        return this;
+    }
+
     public _Value getComparisonEq(_Value other) throws Exception
     {
         if (other.getClass() == _Function.class || other.getClass() == _BuiltInFunction.class)
