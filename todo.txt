@@ -14,7 +14,7 @@ Shorthand
 List mutability
 # Built-in functions
 # More functions: input, len, append, etc.
-Minus operator with 'str'
+Minus operator with 'str' and 'list'
 Implicit string conversion while concatenating
 # Command line arguments
 # Multiline support
@@ -26,3 +26,4 @@ Return multiple values: maybe use lists
 Error definition
 # Dictionaries: maybe add a new value type
 # Slicing
+Modules
